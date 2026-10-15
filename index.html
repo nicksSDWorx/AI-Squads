@@ -10,8 +10,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
 /* Layout: sticky section nav over one scrolling page. Overview first (gradient pillar, goal widget,
-   four jump tiles), then Doelen, Topickeuze (three routes merging into one topic), Cyclus (phase
-   stepper with the detail panel beside it), Ritme (clickable 14-week timeline) and Team. Base unit X = 8px. */
+   four jump tiles), then Doelen (hoofddoel + subdoelen), Topickeuze (intake + quarter calendar strip),
+   Cyclus (phase stepper with the detail panel beside it), Ritme (overlapping 14-week timeline) and Team.
+   Base unit X = 8px. */
 :root {
   /* SD Worx palette (fixed brand values, used as fills with fixed ink pairs) */
   --blue: #006dd8;
@@ -124,13 +125,7 @@ button { font: inherit; color: inherit; }
   backdrop-filter: blur(8px);
 }
 .nav .wrap { display: flex; align-items: center; gap: 24px; min-height: 56px; }
-.nav__brand {
-  flex: none;
-  font-weight: 800;
-  font-size: 16px;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-}
+.nav__brand { flex: none; font-weight: 800; font-size: 16px; letter-spacing: -0.01em; text-decoration: none; }
 .nav__links {
   position: relative;
   display: flex;
@@ -155,12 +150,7 @@ button { font: inherit; color: inherit; }
 .nav a:focus-visible { outline: 2px solid var(--ui); outline-offset: -2px; border-radius: 4px; }
 
 /* Page */
-.page {
-  padding-block: 32px 64px;
-  display: flex;
-  flex-direction: column;
-  gap: 88px;
-}
+.page { padding-block: 32px 64px; display: flex; flex-direction: column; gap: 88px; }
 .section { display: flex; flex-direction: column; gap: 24px; }
 .section-head { display: flex; flex-direction: column; gap: 8px; max-width: 46em; }
 .section-head h2 { font-size: clamp(1.625rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.02em; }
@@ -221,7 +211,7 @@ button { font: inherit; color: inherit; }
 }
 .tile:hover { background: var(--hover-bg); }
 .tile__label { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.tile__value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tile__value { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; font-variant-numeric: tabular-nums; text-wrap: balance; }
 .tile__text { font-size: 14px; color: var(--ink-soft); }
 .arrow { color: var(--label); font-weight: 700; }
 .goal:focus-visible, .tile:focus-visible, .next-link:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
@@ -252,83 +242,113 @@ button { font: inherit; color: inherit; }
 .widget h3 { font-size: 20px; font-weight: 700; }
 .widget p:not(.eyebrow):not(.count) { color: var(--ink-soft); }
 
-/* Topickeuze */
-.funnel { display: flex; flex-direction: column; align-items: stretch; }
-.sources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.source { position: relative; align-items: center; text-align: center; }
-.source::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  height: 25px;
-  border-left: 2px solid var(--ui);
-  transform: translateX(-1px);
-}
-.merge {
-  position: relative;
-  height: 24px;
-  margin-top: 24px;
-  margin-inline: calc((100% - 32px) / 6);
-  border-top: 2px solid var(--ui);
-}
-.merge::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -2px;
-  height: 26px;
-  border-left: 2px solid var(--ui);
-  transform: translateX(-1px);
-}
-.topic-node { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
-.topic-node__pill {
-  background: var(--blue);
-  color: #ffffff;
-  font-weight: 700;
-  padding: 12px 24px;
+/* Doelen */
+.goals { display: flex; flex-direction: column; gap: 16px; }
+.goal-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 32px;
   border-radius: 8px;
+  background: var(--sel-bg);
 }
-.topic-node small { font-size: 13px; color: var(--ink-soft); }
+.goal-main__text {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  max-width: 28em;
+  text-wrap: balance;
+}
+.goal-main .goal__note { align-self: flex-start; }
+
+/* Topickeuze */
+.intake { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.intake__list { display: flex; flex-wrap: wrap; gap: 8px; }
+.intake__item {
+  padding: 8px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 14px;
+  font-weight: 600;
+}
+.intake__note { width: 100%; font-size: 14px; color: var(--ink-soft); }
+
+.quarters {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) repeat(3, minmax(0, 2fr));
+  gap: 24px;
+}
+.quarter {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  min-width: 0;
+}
+.quarter:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  right: -20px;
+  bottom: 17px;
+  color: var(--ui);
+  font-weight: 700;
+  line-height: 1;
+}
+.quarter--start { background: var(--sel-bg); border-color: var(--ui); }
+.quarter__head { display: flex; flex-direction: column; gap: 2px; }
+.quarter__head h3 { font-size: 18px; font-weight: 700; }
+.quarter__note { font-size: 13px; color: var(--ink-soft); }
+.months { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.month {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 64px;
+  padding: 10px;
+  border-radius: 4px;
+  background: var(--hover-bg);
+  font-variant-numeric: tabular-nums;
+}
+.month b { font-size: 13px; }
+.month > span { font-size: 12px; color: var(--ink-soft); }
+.month--plan { background: var(--sel-bg); box-shadow: inset 0 0 0 1px var(--ui); }
+.plan-tag {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: auto;
+  font-size: 12px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1.25;
+  color: var(--label);
+}
+.diamond {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: var(--ui);
+  transform: translateY(-1px) rotate(45deg);
+}
+.plan-note { font-size: 14px; color: var(--ink-soft); max-width: 46em; }
 .next-link {
-  align-self: center;
-  margin-top: 16px;
+  align-self: flex-start;
   font-size: 14px;
   font-weight: 600;
   color: var(--label);
   text-decoration: none;
   border-radius: 4px;
-  padding: 4px 8px;
+  padding: 4px 0;
 }
 .next-link:hover { text-decoration: underline; }
-.split {
-  position: relative;
-  height: 24px;
-  margin-top: 8px;
-  margin-bottom: 24px;
-  margin-inline: calc((100% - 32px) / 6);
-  border-bottom: 2px solid var(--ui);
-}
-.split::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 0;
-  height: 24px;
-  border-left: 2px solid var(--ui);
-  transform: translateX(-1px);
-}
-.target::after { content: none; }
-.target::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 100%;
-  height: 25px;
-  border-left: 2px solid var(--ui);
-  transform: translateX(-1px);
-}
-.plan-note { align-self: center; max-width: 40em; margin-top: 16px; text-align: center; font-size: 14px; color: var(--ink-soft); }
 
 /* Cyclus: stepper + panel */
 .cycle { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; align-items: start; }
@@ -354,41 +374,26 @@ button { font: inherit; color: inherit; }
   text-align: left;
   text-decoration: none;
 }
-.step__mark {
-  flex: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-  display: grid;
-  place-items: center;
-}
+.step__mark { flex: none; width: 24px; height: 24px; border-radius: 4px; display: grid; place-items: center; }
 .step__text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
 .step__text b { font-size: 16px; font-weight: 700; }
 .step__text small { font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-.step__who { font-size: 13px; font-weight: 600; color: var(--label); text-align: right; }
 .step--io { padding-block: 6px; }
 .step--io .step__mark { background: var(--bg); }
 .step--io .step__mark::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--ui); }
 .step--io.is-kpi .step__mark::before { display: none; }
 a.step--io:hover b { text-decoration: underline; }
 a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
-.step--phase {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  cursor: pointer;
-  transition: background-color 0.15s;
-}
+.step--phase { background: var(--surface); border: 1px solid var(--line); cursor: pointer; transition: background-color 0.15s; }
 .step--phase:hover { background: var(--hover-bg); }
 .step--phase[aria-selected="true"] { background: var(--sel-bg); border-color: var(--ui); box-shadow: inset 0 0 0 1px var(--ui); }
 .step--phase:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  overflow: hidden;
-  min-width: 0;
-}
+.owner { flex: none; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+.owner--squad { background: var(--blue); color: #ffffff; }
+.owner--coe { box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; min-width: 0; }
 .panel__top { padding: 24px; display: flex; flex-direction: column; gap: 4px; min-height: 120px; justify-content: flex-end; }
 .panel__top h3 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; }
 .panel__body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
@@ -414,28 +419,47 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 }
 .ticks li.is-kpi::before { display: none; }
 .ticks li.is-kpi .kpi-dot { transform: translateY(1px); }
-.ticks li.is-session::before { display: none; }
-.ticks li.is-session { font-weight: 600; }
 
-.owner { flex: none; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
-.owner--squad { background: var(--blue); color: #ffffff; }
-.owner--coe { box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); }
-.pip { display: inline-block; flex: none; width: 10px; height: 10px; border-radius: 2px; background: var(--ui); }
-.pips { display: inline-flex; gap: 4px; margin-left: auto; }
-.bar--bouw .pip { background: #ffffff; }
 .sessions { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 8px; background: var(--sel-bg); }
 .sessions__title { font-weight: 700; }
 .sessions__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.sessions__list li { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 4px; background: var(--surface); border: 1px solid var(--line); }
+.sessions__list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
 .sessions__list small { margin-left: auto; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.pip { display: inline-block; flex: none; width: 10px; height: 10px; border-radius: 2px; background: var(--ui); }
+
+/* Ritme: legend */
+.legend-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px 48px;
+  padding: 20px 24px;
+  border-radius: 8px;
+  background: var(--hover-bg);
+}
+.legend-group { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.legend-group__title { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
+.legend { display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.legend li { display: grid; grid-template-columns: 16px minmax(0, 9.5rem) minmax(0, 1fr); align-items: center; gap: 12px; }
+.legend b { font-weight: 600; }
+.legend span:not(.kpi-dot) { color: var(--ink-soft); }
+.legend .kpi-dot { justify-self: center; }
+.swatch { width: 16px; height: 16px; border-radius: 4px; flex: none; display: inline-block; }
+.swatch--analyse { background: var(--sky); }
+.swatch--bouw { background: var(--blue); }
+.swatch--impl { background: var(--navy); box-shadow: inset 0 0 0 1px var(--impl-line); }
+.swatch--lab { background: var(--lab-fill); border: 1px dashed var(--lab-line); }
+.swatch--off { background: var(--off-col); box-shadow: inset 0 0 0 1px var(--rule); }
 
 /* Ritme: timeline */
-.tl-scroll {
-  overflow-x: auto;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-}
+.tl-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .tl-scroll:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 .tl {
   display: grid;
@@ -478,48 +502,27 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   font-weight: 600;
   line-height: 1.2;
   text-align: left;
-  cursor: pointer;
-  transition: filter 0.15s;
 }
-.bar:hover { filter: brightness(1.08); }
-.bar[aria-pressed="true"], .bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
+button.bar { cursor: pointer; transition: filter 0.15s; }
+button.bar:hover { filter: brightness(1.08); }
+button.bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 .bar .kpi-dot { margin-left: auto; }
 .bar--analyse { background: var(--sky); color: #000000; }
 .bar--bouw { background: var(--blue); color: #ffffff; }
 .bar--impl { background: var(--navy); color: #ffffff; box-shadow: inset 0 0 0 1px var(--impl-line); }
 .bar--lab { background: var(--lab-fill); color: var(--lab-ink); border: 1px dashed var(--lab-line); }
 
-.tl-detail {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.6fr);
-  gap: 16px 32px;
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
+.tl-notes { display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.tl-notes li { display: flex; gap: 12px; align-items: baseline; }
+.tl-notes li::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--ui);
+  transform: translateY(-2px);
 }
-.tl-detail__head { display: flex; gap: 12px; align-items: flex-start; }
-.tl-detail__head .swatch { margin-top: 4px; }
-.tl-detail__head h3 { font-size: 22px; font-weight: 700; }
-.tl-detail .who { padding-bottom: 0; border-bottom: 0; }
-.tl-detail__also {
-  grid-column: 1 / -1;
-  padding-top: 16px;
-  border-top: 1px solid var(--rule);
-  font-size: 14px;
-  color: var(--ink-soft);
-}
-
-.legend { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 14px; }
-.legend li { display: flex; align-items: center; gap: 8px; }
-.swatch { width: 16px; height: 16px; border-radius: 4px; flex: none; display: inline-block; }
-.swatch--analyse { background: var(--sky); }
-.swatch--bouw { background: var(--blue); }
-.swatch--impl { background: var(--navy); box-shadow: inset 0 0 0 1px var(--impl-line); }
-.swatch--lab { background: var(--lab-fill); border: 1px dashed var(--lab-line); }
-.legend b { font-weight: 600; }
-.legend span { color: var(--ink-soft); }
-.callout { font-size: 15px; font-weight: 700; }
 
 /* Team */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
@@ -541,31 +544,29 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   border-top: 1px solid var(--rule);
 }
 
+@media (max-width: 1000px) {
+  .quarters { grid-template-columns: minmax(0, 1fr); }
+  .quarter:not(:last-child)::after { content: "↓"; right: auto; left: 50%; bottom: -21px; transform: translateX(-50%); }
+}
 @media (max-width: 960px) {
   .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 860px) {
-  .hero, .grid-3, .grid-2, .cycle, .tl-detail { grid-template-columns: minmax(0, 1fr); }
+  .hero, .grid-3, .grid-2, .cycle, .legend-box { grid-template-columns: minmax(0, 1fr); }
   .pillar { padding: 24px; }
   .pillar--gradient { min-height: 240px; }
+  .goal-main { padding: 24px; }
   .page { gap: 64px; padding-block: 24px 48px; }
   .panel__top { min-height: 0; }
-}
-@media (max-width: 700px) {
-  .sources { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .source::after { display: none; }
-  .merge { margin: 0; height: 32px; border-top: 0; }
-  .merge::after { top: 0; height: 32px; }
-  .target::before { display: none; }
-  .split { margin: 8px 0 0; height: 32px; border-bottom: 0; }
-  .split::before { height: 32px; }
 }
 @media (max-width: 520px) {
   .tiles { grid-template-columns: minmax(0, 1fr); }
   .nav .wrap { gap: 12px; }
+  .legend li { grid-template-columns: 16px minmax(0, 1fr); }
+  .legend li > span:last-child:not(.kpi-dot) { grid-column: 2; margin-top: -6px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .goal, .tile, .step--phase, .bar { transition: none; }
+  .goal, .tile, .step--phase, button.bar { transition: none; }
 }
 </style>
 </head>
@@ -590,14 +591,14 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   <section class="overview" id="overzicht" data-nav-section aria-label="Overzicht">
     <header class="hero">
       <div class="pillar pillar--gradient">
-        <p class="eyebrow">SD Worx Nederland · vijfde schets</p>
+        <p class="eyebrow">SD Worx Nederland · zesde schets</p>
         <h1>AI Squads</h1>
         <p class="lead">Elke maand pakken we één proces aan. Twee weken analyseren, twee weken bouwen, twee weken implementeren, in het ritme van de payroll-kalender.</p>
       </div>
       <a class="pillar goal" href="#doelen">
         <p class="eyebrow">Hoofddoel</p>
         <p class="goal__text">Elke maand een tastbare, meetbare verbetering in de KPI's van de teams.</p>
-        <p class="goal__note"><span class="kpi-dot" aria-hidden="true"></span>Sluit aan op het NL efficiency target<span class="goal__more">Subdoelen <span aria-hidden="true">→</span></span></p>
+        <p class="goal__note"><span class="kpi-dot" aria-hidden="true"></span>Sluit aan op het NL efficiency target<span class="goal__more">Alle doelen <span aria-hidden="true">→</span></span></p>
       </a>
     </header>
 
@@ -619,8 +620,8 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
       </a>
       <a class="tile" href="#team">
         <span class="tile__label"><span class="eyebrow">Team</span><span class="arrow" aria-hidden="true">→</span></span>
-        <span class="tile__value">5 + 8</span>
-        <span class="tile__text">Vaste kern plus wisselende deelnemers, nog niet bevestigd.</span>
+        <span class="tile__value">Vaste kern + wisselende deelnemers</span>
+        <span class="tile__text">De wisselende deelnemers sluiten per topic aan.</span>
       </a>
     </div>
   </section>
@@ -628,52 +629,97 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   <section class="section" id="doelen" data-nav-section aria-labelledby="doelen-h">
     <div class="section-head">
       <h2 id="doelen-h">Doelen</h2>
-      <p>Het hoofddoel is elke maand een tastbare, meetbare verbetering in de KPI's van de teams, in lijn met het NL efficiency target. Daarnaast werken de squads aan drie subdoelen.</p>
+      <p>Eén hoofddoel en drie subdoelen.</p>
     </div>
-    <ol class="grid-3">
-      <li class="widget">
-        <p class="eyebrow">Subdoel 1</p>
-        <h3>Processen in kaart</h3>
-        <p>We brengen de processen van de organisatie beter in kaart.</p>
-      </li>
-      <li class="widget">
-        <p class="eyebrow">Subdoel 2</p>
-        <h3>Verdieping in AI</h3>
-        <p>De kerngroep bouwt diepere AI-knowhow op.</p>
-      </li>
-      <li class="widget">
-        <p class="eyebrow">Subdoel 3</p>
-        <h3>Agentic werken</h3>
-        <p>Agentic werken wordt werkelijkheid.</p>
-      </li>
-    </ol>
+    <div class="goals">
+      <div class="goal-main">
+        <p class="eyebrow">Hoofddoel</p>
+        <p class="goal-main__text">Elke maand een tastbare, meetbare verbetering in de KPI's van de teams.</p>
+        <p class="goal__note"><span class="kpi-dot" aria-hidden="true"></span>Sluit aan op het NL efficiency target</p>
+      </div>
+      <ol class="grid-3">
+        <li class="widget">
+          <p class="eyebrow">Subdoel 1</p>
+          <h3>Processen in kaart</h3>
+          <p>We brengen de processen van de organisatie beter in kaart.</p>
+        </li>
+        <li class="widget">
+          <p class="eyebrow">Subdoel 2</p>
+          <h3>Verdieping in AI</h3>
+          <p>De kerngroep bouwt diepere AI-knowhow op.</p>
+        </li>
+        <li class="widget">
+          <p class="eyebrow">Subdoel 3</p>
+          <h3>Agentic werken</h3>
+          <p>Agentic werken wordt werkelijkheid.</p>
+        </li>
+      </ol>
+    </div>
   </section>
 
   <section class="section" id="topickeuze" data-nav-section aria-labelledby="topickeuze-h">
     <div class="section-head">
       <h2 id="topickeuze-h">Topickeuze en kwartaalplanning</h2>
-      <p>Een topic komt via een van drie wegen binnen. Per kwartaal bepalen we welke topics we aanpakken. Elk topic start een eigen cyclus, te beginnen met de Analyse.</p>
+      <p>Topics komen via drie wegen binnen. Per kwartaal kiezen we welke topics we aanpakken, één per maand. In de laatste maand van elk kwartaal plannen we het volgende kwartaal.</p>
     </div>
-    <div class="funnel">
-      <ol class="sources">
-        <li class="widget source"><p class="eyebrow">Weg 1</p><h3>Vanuit de teams</h3></li>
-        <li class="widget source"><p class="eyebrow">Weg 2</p><h3>Vanuit het MT</h3></li>
-        <li class="widget source"><p class="eyebrow">Weg 3</p><h3>Vanuit de CoE-funnel</h3></li>
-      </ol>
-      <div class="merge" aria-hidden="true"></div>
-      <div class="topic-node">
-        <span class="topic-node__pill">Kwartaalplanning</span>
-        <small>In maand 3 kiezen we de topics voor maand 4, 5 en 6</small>
-      </div>
-      <div class="split" aria-hidden="true"></div>
-      <ol class="sources targets">
-        <li class="widget source target"><p class="eyebrow">Maand 4</p><h3>Topic 1</h3></li>
-        <li class="widget source target"><p class="eyebrow">Maand 5</p><h3>Topic 2</h3></li>
-        <li class="widget source target"><p class="eyebrow">Maand 6</p><h3>Topic 3</h3></li>
-      </ol>
-      <p class="plan-note">Wanneer een topic start, hangt af van de capaciteit. In maand 6 volgt de planning voor maand 7, 8 en 9, en zo verder.</p>
-      <a class="next-link" href="#cyclus">Elk topic start met de Analyse <span aria-hidden="true">↓</span></a>
+
+    <div class="intake">
+      <p class="eyebrow">Instroom van topics</p>
+      <ul class="intake__list">
+        <li class="intake__item">Vanuit de teams</li>
+        <li class="intake__item">Vanuit het MT</li>
+        <li class="intake__item">Vanuit de CoE-funnel</li>
+      </ul>
     </div>
+
+    <ol class="quarters" aria-label="Kwartaalplanning per maand">
+      <li class="quarter quarter--start">
+        <div class="quarter__head">
+          <p class="eyebrow">Vooraf</p>
+          <h3>Startplanning</h3>
+        </div>
+        <p class="plan-tag"><i class="diamond" aria-hidden="true"></i>Kiest de topics voor maand 1 t/m 3</p>
+      </li>
+      <li class="quarter">
+        <div class="quarter__head">
+          <p class="eyebrow">Kwartaal 1</p>
+          <p class="quarter__note">Topics gekozen in de startplanning</p>
+        </div>
+        <ol class="months">
+          <li class="month"><b>Maand 1</b><span>Topic 1</span></li>
+          <li class="month"><b>Maand 2</b><span>Topic 2</span></li>
+          <li class="month month--plan"><b>Maand 3 <i class="diamond" aria-hidden="true"></i></b><span>Topic 3</span></li>
+        </ol>
+        <p class="plan-tag"><i class="diamond" aria-hidden="true"></i>In maand 3: planning van kwartaal 2</p>
+      </li>
+      <li class="quarter">
+        <div class="quarter__head">
+          <p class="eyebrow">Kwartaal 2</p>
+          <p class="quarter__note">Topics gekozen in maand 3</p>
+        </div>
+        <ol class="months">
+          <li class="month"><b>Maand 4</b><span>Topic 4</span></li>
+          <li class="month"><b>Maand 5</b><span>Topic 5</span></li>
+          <li class="month month--plan"><b>Maand 6 <i class="diamond" aria-hidden="true"></i></b><span>Topic 6</span></li>
+        </ol>
+        <p class="plan-tag"><i class="diamond" aria-hidden="true"></i>In maand 6: planning van kwartaal 3</p>
+      </li>
+      <li class="quarter">
+        <div class="quarter__head">
+          <p class="eyebrow">Kwartaal 3</p>
+          <p class="quarter__note">Topics gekozen in maand 6</p>
+        </div>
+        <ol class="months">
+          <li class="month"><b>Maand 7</b><span>Topic 7</span></li>
+          <li class="month"><b>Maand 8</b><span>Topic 8</span></li>
+          <li class="month month--plan"><b>Maand 9 <i class="diamond" aria-hidden="true"></i></b><span>Topic 9</span></li>
+        </ol>
+        <p class="plan-tag"><i class="diamond" aria-hidden="true"></i>In maand 9: planning van kwartaal 4</p>
+      </li>
+    </ol>
+
+    <p class="plan-note">Wanneer AI Squads start, hangt af van de capaciteit en is nog niet bekend. De maanden tellen daarom vanaf de start.</p>
+    <a class="next-link" href="#cyclus">Elk topic start een cyclus, te beginnen met de Analyse <span aria-hidden="true">↓</span></a>
   </section>
 
   <section class="section" id="cyclus" data-nav-section aria-labelledby="cyclus-h">
@@ -685,7 +731,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
       <div class="stepper">
         <a class="step step--io" href="#topickeuze">
           <span class="step__mark" aria-hidden="true"></span>
-          <span class="step__text"><b>Topic uit de kwartaalplanning</b><small>start afhankelijk van capaciteit</small></span>
+          <span class="step__text"><b>Topic van de maand</b><small>gekozen in de kwartaalplanning</small></span>
         </a>
         <div class="steps" role="tablist" aria-label="Fasen van een cyclus" aria-orientation="vertical">
           <button class="step step--phase" type="button" role="tab" id="tab-analyse" aria-controls="panel-analyse" aria-selected="true" tabindex="0">
@@ -767,7 +813,26 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   <section class="section" id="ritme" data-nav-section aria-labelledby="ritme-h">
     <div class="section-head">
       <h2 id="ritme-h">Het ritme: elke vier weken een nieuwe cyclus</h2>
-      <p>De Implementatie van de ene cyclus loopt gelijk met de Analyse van de volgende. In de off-weken draait daarnaast het Experimentation Lab. Klik op een blok voor de details.</p>
+      <p>Elke maand start een nieuw topic. Daardoor loopt de Implementatie van de ene cyclus gelijk met de Analyse van de volgende. Klik op een fase om de details in Cyclus te openen.</p>
+    </div>
+
+    <div class="legend-box">
+      <div class="legend-group">
+        <p class="legend-group__title">Fasen en wie</p>
+        <ul class="legend">
+          <li><i class="swatch swatch--analyse"></i><b>Analyse</b><span>Innovatie en CoE</span></li>
+          <li><i class="swatch swatch--bouw"></i><b>Bouw</b><span>AI-Squad</span></li>
+          <li><i class="swatch swatch--impl"></i><b>Implementatie</b><span>Innovatie en CoE</span></li>
+        </ul>
+      </div>
+      <div class="legend-group">
+        <p class="legend-group__title">Overig</p>
+        <ul class="legend">
+          <li><i class="swatch swatch--off"></i><b>Off-weken payroll</b><span>lichte kolommen</span></li>
+          <li><i class="swatch swatch--lab"></i><b>Experimentation Lab</b><span>in de off-weken</span></li>
+          <li><span class="kpi-dot" aria-hidden="true"></span><b>Meetbaar resultaat</b><span>in de KPI's van het team</span></li>
+        </ul>
+      </div>
     </div>
 
     <div class="tl-scroll" role="region" aria-label="Tijdlijn van drie overlappende cycli over veertien weken" tabindex="0">
@@ -796,54 +861,32 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
         <div class="tl-pay tl-pay--off" style="grid-column: 8; grid-row: 2">Off</div>
 
         <div class="tl-label" style="grid-row: 3">Experimentation Lab</div>
-        <button class="bar bar--lab" type="button" data-phase="lab" data-col="2" style="grid-column: 2; grid-row: 3">Lab</button>
-        <button class="bar bar--lab" type="button" data-phase="lab" data-col="4" style="grid-column: 4; grid-row: 3">Lab</button>
-        <button class="bar bar--lab" type="button" data-phase="lab" data-col="6" style="grid-column: 6; grid-row: 3">Lab</button>
-        <button class="bar bar--lab" type="button" data-phase="lab" data-col="8" style="grid-column: 8; grid-row: 3">Lab</button>
+        <div class="bar bar--lab" style="grid-column: 2; grid-row: 3">Lab</div>
+        <div class="bar bar--lab" style="grid-column: 4; grid-row: 3">Lab</div>
+        <div class="bar bar--lab" style="grid-column: 6; grid-row: 3">Lab</div>
+        <div class="bar bar--lab" style="grid-column: 8; grid-row: 3">Lab</div>
 
-        <div class="tl-label" style="grid-row: 4">Cyclus 1<small>topic maand 1</small></div>
-        <button class="bar bar--analyse" type="button" data-phase="analyse" data-cycle="1" data-col="2" style="grid-column: 2; grid-row: 4">Analyse</button>
-        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="1" data-col="3" style="grid-column: 3; grid-row: 4">Bouw<span class="pips" aria-hidden="true"><i class="pip"></i><i class="pip"></i></span></button>
-        <button class="bar bar--impl" type="button" data-phase="impl" data-cycle="1" data-col="4" style="grid-column: 4; grid-row: 4">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
+        <div class="tl-label" style="grid-row: 4">Cyclus 1<small>topic 1 · maand 1</small></div>
+        <button class="bar bar--analyse" type="button" data-phase="analyse" style="grid-column: 2; grid-row: 4">Analyse</button>
+        <button class="bar bar--bouw" type="button" data-phase="bouw" style="grid-column: 3; grid-row: 4">Bouw</button>
+        <button class="bar bar--impl" type="button" data-phase="impl" style="grid-column: 4; grid-row: 4">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
 
-        <div class="tl-label" style="grid-row: 5">Cyclus 2<small>topic maand 2</small></div>
-        <button class="bar bar--analyse" type="button" data-phase="analyse" data-cycle="2" data-col="4" style="grid-column: 4; grid-row: 5">Analyse</button>
-        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="2" data-col="5" style="grid-column: 5; grid-row: 5">Bouw<span class="pips" aria-hidden="true"><i class="pip"></i><i class="pip"></i></span></button>
-        <button class="bar bar--impl" type="button" data-phase="impl" data-cycle="2" data-col="6" style="grid-column: 6; grid-row: 5">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
+        <div class="tl-label" style="grid-row: 5">Cyclus 2<small>topic 2 · maand 2</small></div>
+        <button class="bar bar--analyse" type="button" data-phase="analyse" style="grid-column: 4; grid-row: 5">Analyse</button>
+        <button class="bar bar--bouw" type="button" data-phase="bouw" style="grid-column: 5; grid-row: 5">Bouw</button>
+        <button class="bar bar--impl" type="button" data-phase="impl" style="grid-column: 6; grid-row: 5">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
 
-        <div class="tl-label" style="grid-row: 6">Cyclus 3<small>topic maand 3</small></div>
-        <button class="bar bar--analyse" type="button" data-phase="analyse" data-cycle="3" data-col="6" style="grid-column: 6; grid-row: 6">Analyse</button>
-        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="3" data-col="7" style="grid-column: 7; grid-row: 6">Bouw<span class="pips" aria-hidden="true"><i class="pip"></i><i class="pip"></i></span></button>
-        <button class="bar bar--impl" type="button" data-phase="impl" data-cycle="3" data-col="8" style="grid-column: 8; grid-row: 6">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
+        <div class="tl-label" style="grid-row: 6">Cyclus 3<small>topic 3 · maand 3</small></div>
+        <button class="bar bar--analyse" type="button" data-phase="analyse" style="grid-column: 6; grid-row: 6">Analyse</button>
+        <button class="bar bar--bouw" type="button" data-phase="bouw" style="grid-column: 7; grid-row: 6">Bouw</button>
+        <button class="bar bar--impl" type="button" data-phase="impl" style="grid-column: 8; grid-row: 6">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
       </div>
     </div>
 
-    <div class="tl-detail" aria-live="polite">
-      <div class="tl-detail__head">
-        <span class="swatch swatch--impl" data-swatch aria-hidden="true"></span>
-        <div>
-          <p class="meta" data-meta>Cyclus 1 · week 5–6 · payroll off</p>
-          <h3 data-title>Implementatie</h3>
-        </div>
-      </div>
-      <div class="who" data-who-wrap><span class="who__label" data-who-label>In principe gedragen door</span><span class="who__name" data-who>Innovatie en Centre of Excellence</span></div>
-      <ul class="ticks" data-items>
-        <li>De verandering landt in het team</li>
-        <li class="is-kpi"><span class="kpi-dot" aria-hidden="true"></span>Verbetering zichtbaar in de KPI's</li>
-      </ul>
-      <p class="tl-detail__also" data-also>Tegelijk in dit blok: Experimentation Lab en Analyse (cyclus 2).</p>
-    </div>
-
-    <ul class="legend">
-      <li><i class="swatch swatch--analyse"></i><b>Analyse</b><span>Innovatie en CoE</span></li>
-      <li><i class="swatch swatch--bouw"></i><b>Bouw</b><span>AI-Squad</span></li>
-      <li><span class="pip" aria-hidden="true"></span><b>Sessie AI-Squad</b><span>1 per week in de Bouw</span></li>
-      <li><i class="swatch swatch--impl"></i><b>Implementatie</b><span>Innovatie en CoE</span></li>
-      <li><i class="swatch swatch--lab"></i><b>Experimentation Lab</b><span>off-weken</span></li>
-      <li><span class="kpi-dot" aria-hidden="true"></span><b>Meetbaar resultaat</b><span>in de KPI's van het team</span></li>
+    <ul class="tl-notes">
+      <li><span><b>Bouw:</b> de AI-Squad komt elke week één keer bij elkaar.</span></li>
+      <li><span><b>Resultaat:</b> vanaf week 6 levert elke vier weken een cyclus resultaat op.</span></li>
     </ul>
-
-    <p class="callout">Vanaf week 6 levert elke vier weken een cyclus resultaat op.</p>
   </section>
 
   <section class="section" id="team" data-nav-section aria-labelledby="team-h">
@@ -882,7 +925,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   </section>
 
   <footer class="foot">
-    <span>AI Squads · vijfde schets</span>
+    <span>AI Squads · zesde schets</span>
     <span>15 oktober 2026</span>
   </footer>
 
@@ -890,12 +933,6 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 
 <script>
 (function () {
-  var PHASES = {
-    analyse: { name: 'Analyse', whoLabel: 'In principe gedragen door', who: 'Innovatie en Centre of Excellence', swatch: 'swatch--analyse' },
-    bouw: { name: 'Bouw', whoLabel: 'Gedragen door', who: 'AI-Squad', swatch: 'swatch--bouw' },
-    impl: { name: 'Implementatie', whoLabel: 'In principe gedragen door', who: 'Innovatie en Centre of Excellence', swatch: 'swatch--impl' },
-    lab: { name: 'Experimentation Lab', whoLabel: '', who: '', swatch: 'swatch--lab' }
-  };
   var toArray = function (list) { return Array.prototype.slice.call(list); };
 
   /* Cyclus: phase stepper works as vertical tabs */
@@ -919,58 +956,17 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
     });
   });
 
-  /* Ritme: each timeline block shows its details below the timeline.
-     Phase activities are read from the Cyclus panels so they live in one place. */
-  var bars = toArray(document.querySelectorAll('.tl .bar'));
-  var detail = document.querySelector('.tl-detail');
-  function part(sel) { return detail.querySelector(sel); }
-  function weeks(col) { var b = col - 1; return 'week ' + (2 * b - 1) + '–' + (2 * b); }
-  function payroll(col) { return (col - 1) % 2 === 1 ? 'payroll off' : 'payroll on'; }
-  function label(bar) {
-    var name = PHASES[bar.dataset.phase].name;
-    return bar.dataset.cycle ? name + ' (cyclus ' + bar.dataset.cycle + ')' : name;
-  }
-  function items(phase, col) {
-    if (phase === 'lab') {
-      var li = document.createElement('li');
-      li.textContent = 'Draait in de off-weken van payroll, naast Analyse en Implementatie';
-      return [li];
-    }
-    var list = toArray(document.querySelectorAll('#panel-' + phase + ' .ticks > li')).map(function (n) { return n.cloneNode(true); });
-    if (phase === 'bouw') {
-      var b = col - 1, session = document.createElement('li');
-      session.className = 'is-session';
-      session.innerHTML = '<span class="pip" aria-hidden="true"></span>Sessie AI-Squad in week ' + (2 * b - 1) + ' en week ' + (2 * b);
-      list.unshift(session);
-    }
-    return list;
-  }
-  function joinNl(list) {
-    return list.length < 2 ? list.join('') : list.slice(0, -1).join(', ') + ' en ' + list[list.length - 1];
-  }
-  function selectBar(bar) {
-    var phase = bar.dataset.phase, col = Number(bar.dataset.col), p = PHASES[phase];
-    bars.forEach(function (b) { b.setAttribute('aria-pressed', b === bar ? 'true' : 'false'); });
-    part('[data-meta]').textContent = (bar.dataset.cycle ? 'Cyclus ' + bar.dataset.cycle + ' · ' : '') + weeks(col) + ' · ' + payroll(col);
-    part('[data-title]').textContent = p.name;
-    part('[data-swatch]').className = 'swatch ' + p.swatch;
-    part('[data-who-wrap]').hidden = !p.who;
-    part('[data-who-label]').textContent = p.whoLabel;
-    part('[data-who]').textContent = p.who;
-    var list = part('[data-items]');
-    list.textContent = '';
-    items(phase, col).forEach(function (li) { list.appendChild(li); });
-    var others = bars.filter(function (b) { return b !== bar && Number(b.dataset.col) === col; }).map(label);
-    var also = part('[data-also]');
-    also.hidden = others.length === 0;
-    also.textContent = others.length ? 'Tegelijk in dit blok: ' + joinNl(others) + '.' : '';
-  }
-  bars.forEach(function (b) {
-    b.setAttribute('aria-label', label(b) + ', ' + weeks(Number(b.dataset.col)));
-    b.addEventListener('click', function () { selectBar(b); });
+  /* Ritme: a phase block opens that phase in Cyclus */
+  toArray(document.querySelectorAll('.tl button.bar[data-phase]')).forEach(function (bar) {
+    var tab = document.getElementById('tab-' + bar.dataset.phase);
+    if (!tab) return;
+    bar.setAttribute('aria-label', bar.textContent.trim() + ': bekijk de details in Cyclus');
+    bar.addEventListener('click', function () {
+      selectTab(tab);
+      document.getElementById('cyclus').scrollIntoView({ block: 'start' });
+      tab.focus({ preventScroll: true });
+    });
   });
-  var first = document.querySelector('.tl .bar[data-cycle="1"][data-phase="impl"]');
-  if (first) selectBar(first);
 
   /* Nav: highlight the section in view */
   var links = toArray(document.querySelectorAll('.nav__links a'));
