@@ -9,14 +9,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
-/* Layout: SD Worx pillar layout. Gradient pillar + white goal widget, then three phase pillars,
-   an overlapping block timeline on the payroll rhythm, and the team. Base unit X = 8px. */
+/* Layout: sticky section nav over one scrolling page. Overview first (gradient pillar, goal widget,
+   four jump tiles), then Doelen, Topickeuze (three routes merging into one topic), Cyclus (phase
+   stepper with the detail panel beside it), Ritme (clickable 14-week timeline) and Team. Base unit X = 8px. */
 :root {
   /* SD Worx palette (fixed brand values, used as fills with fixed ink pairs) */
   --blue: #006dd8;
   --navy: #001c52;
-  --persian: #000d3a;
-  --azure: #38a1ff;
   --sky: #9ed2ff;
   --icy: #d9f1ff;
   --yellow: #ffbe00;
@@ -29,13 +28,15 @@
   --label: #006dd8;
   --line: #000000;
   --rule: rgba(0, 28, 82, 0.14);
+  --ui: #006dd8;
+  --hover-bg: rgba(217, 241, 255, 0.5);
+  --sel-bg: #d9f1ff;
+  --nav-bg: rgba(255, 255, 255, 0.94);
   --off-col: rgba(217, 241, 255, 0.6);
   --lab-fill: #ffffff;
   --lab-line: #006dd8;
   --lab-ink: #006dd8;
   --impl-line: #001c52;
-  --pay-on: #006dd8;
-  --focus: #006dd8;
 
   --font: 'Inter', -apple-system, 'Segoe UI', system-ui, sans-serif;
 }
@@ -48,13 +49,15 @@
     --label: #ffffff;
     --line: rgba(158, 210, 255, 0.45);
     --rule: rgba(158, 210, 255, 0.18);
+    --ui: #9ed2ff;
+    --hover-bg: rgba(158, 210, 255, 0.08);
+    --sel-bg: rgba(158, 210, 255, 0.16);
+    --nav-bg: rgba(0, 13, 58, 0.94);
     --off-col: rgba(158, 210, 255, 0.08);
     --lab-fill: #001c52;
     --lab-line: #9ed2ff;
     --lab-ink: #ffffff;
     --impl-line: rgba(158, 210, 255, 0.6);
-    --pay-on: #9ed2ff;
-    --focus: #9ed2ff;
     color-scheme: dark;
   }
 }
@@ -66,17 +69,21 @@
   --label: #ffffff;
   --line: rgba(158, 210, 255, 0.45);
   --rule: rgba(158, 210, 255, 0.18);
+  --ui: #9ed2ff;
+  --hover-bg: rgba(158, 210, 255, 0.08);
+  --sel-bg: rgba(158, 210, 255, 0.16);
+  --nav-bg: rgba(0, 13, 58, 0.94);
   --off-col: rgba(158, 210, 255, 0.08);
   --lab-fill: #001c52;
   --lab-line: #9ed2ff;
   --lab-ink: #ffffff;
   --impl-line: rgba(158, 210, 255, 0.6);
-  --pay-on: #9ed2ff;
-  --focus: #9ed2ff;
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
+html { scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 body {
   background: var(--bg);
   color: var(--ink);
@@ -88,16 +95,14 @@ body {
 h1, h2, h3, p, ul, ol { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
 h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
 
-.page {
+.wrap {
   max-width: 1168px;
   margin: 0 auto;
-  padding-block: 40px 64px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: flex;
-  flex-direction: column;
-  gap: 72px;
 }
 
 .eyebrow {
@@ -108,12 +113,62 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   color: var(--label);
 }
 
-/* Hero: gradient pillar beside a white goal widget */
-.hero {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 16px;
+/* Sticky nav */
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--rule);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
+.nav .wrap { display: flex; align-items: center; gap: 24px; min-height: 56px; }
+.nav__brand {
+  flex: none;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+.nav__links {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav__links::-webkit-scrollbar { display: none; }
+.nav__links a {
+  flex: none;
+  padding: 16px 12px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+.nav__links a:hover { color: var(--ink); }
+.nav__links a[aria-current="true"] { color: var(--label); border-bottom-color: var(--ui); }
+.nav a:focus-visible { outline: 2px solid var(--ui); outline-offset: -2px; border-radius: 4px; }
+
+/* Page */
+.page {
+  padding-block: 32px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 88px;
+}
+.section { display: flex; flex-direction: column; gap: 24px; }
+.section-head { display: flex; flex-direction: column; gap: 8px; max-width: 46em; }
+.section-head h2 { font-size: clamp(1.625rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.02em; }
+.section-head p { color: var(--ink-soft); }
+
+/* Overview */
+.overview { display: flex; flex-direction: column; gap: 16px; }
+.hero { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
 .pillar { border-radius: 8px; padding: 40px; min-width: 0; }
 .pillar--gradient {
   background: linear-gradient(140deg, var(--blue) 0%, var(--navy) 100%);
@@ -122,15 +177,10 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   flex-direction: column;
   justify-content: flex-end;
   gap: 16px;
-  min-height: 320px;
+  min-height: 300px;
 }
 .pillar--gradient .eyebrow { color: #ffffff; }
-.hero h1 {
-  font-size: clamp(2.5rem, 6vw, 3.75rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.02;
-}
+.hero h1 { font-size: clamp(2.5rem, 6vw, 3.75rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; }
 .lead { font-size: 18px; max-width: 34em; }
 
 .goal {
@@ -140,14 +190,11 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   flex-direction: column;
   justify-content: space-between;
   gap: 24px;
+  text-decoration: none;
+  transition: background-color 0.15s;
 }
-.goal__text {
-  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  text-wrap: balance;
-}
+.goal:hover { background: var(--hover-bg); }
+.goal__text { font-size: clamp(1.375rem, 2.4vw, 1.75rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; text-wrap: balance; }
 .goal__note {
   display: flex;
   align-items: center;
@@ -157,6 +204,27 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   padding-top: 16px;
   border-top: 1px solid var(--rule);
 }
+.goal__more { margin-left: auto; font-weight: 600; color: var(--label); white-space: nowrap; }
+
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  text-decoration: none;
+  min-width: 0;
+  transition: background-color 0.15s;
+}
+.tile:hover { background: var(--hover-bg); }
+.tile__label { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tile__value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tile__text { font-size: 14px; color: var(--ink-soft); }
+.arrow { color: var(--label); font-weight: 700; }
+.goal:focus-visible, .tile:focus-visible, .next-link:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 
 .kpi-dot {
   display: inline-block;
@@ -167,12 +235,6 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   background: var(--yellow);
   box-shadow: 0 0 0 1px var(--navy);
 }
-
-/* Section heads */
-.section { display: flex; flex-direction: column; gap: 24px; }
-.section-head { display: flex; flex-direction: column; gap: 8px; max-width: 44em; }
-.section-head h2 { font-size: clamp(1.625rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.02em; }
-.section-head p { color: var(--ink-soft); }
 
 /* Widgets */
 .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
@@ -188,32 +250,126 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   min-width: 0;
 }
 .widget h3 { font-size: 20px; font-weight: 700; }
-.widget p { color: var(--ink-soft); }
+.widget p:not(.eyebrow):not(.count) { color: var(--ink-soft); }
 
-/* Phase pillars */
-.phase {
+/* Topickeuze */
+.funnel { display: flex; flex-direction: column; align-items: stretch; }
+.sources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.source { position: relative; align-items: center; text-align: center; }
+.source::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  height: 25px;
+  border-left: 2px solid var(--ui);
+  transform: translateX(-1px);
+}
+.merge {
+  position: relative;
+  height: 24px;
+  margin-top: 24px;
+  margin-inline: calc((100% - 32px) / 6);
+  border-top: 2px solid var(--ui);
+}
+.merge::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  height: 26px;
+  border-left: 2px solid var(--ui);
+  transform: translateX(-1px);
+}
+.topic-node { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.topic-node__pill {
+  background: var(--blue);
+  color: #ffffff;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 8px;
+}
+.topic-node small { font-size: 13px; color: var(--ink-soft); }
+.next-link {
+  align-self: center;
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--label);
+  text-decoration: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+.next-link:hover { text-decoration: underline; }
+
+/* Cyclus: stepper + panel */
+.cycle { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; align-items: start; }
+.stepper { position: relative; display: flex; flex-direction: column; gap: 8px; }
+.stepper::before {
+  content: "";
+  position: absolute;
+  left: 31px;
+  top: 20px;
+  bottom: 20px;
+  border-left: 2px solid var(--rule);
+}
+.steps { display: flex; flex-direction: column; gap: 8px; }
+.step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 8px;
+  text-align: left;
+  text-decoration: none;
+}
+.step__mark {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+}
+.step__text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.step__text b { font-size: 16px; font-weight: 700; }
+.step__text small { font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.step__who { font-size: 13px; font-weight: 600; color: var(--label); text-align: right; }
+.step--io { padding-block: 6px; }
+.step--io .step__mark { background: var(--bg); }
+.step--io .step__mark::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--ui); }
+.step--io.is-kpi .step__mark::before { display: none; }
+a.step--io:hover b { text-decoration: underline; }
+a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
+.step--phase {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.step--phase:hover { background: var(--hover-bg); }
+.step--phase[aria-selected="true"] { background: var(--sel-bg); border-color: var(--ui); box-shadow: inset 0 0 0 1px var(--ui); }
+.step--phase:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
+
+.panel {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   min-width: 0;
 }
-.phase__top {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-height: 132px;
-  justify-content: flex-end;
-}
-.phase__top h3 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
-.phase__meta { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.phase--analyse .phase__top { background: var(--sky); color: #000000; }
-.phase--bouw .phase__top { background: var(--blue); color: #ffffff; }
-.phase--impl .phase__top { background: var(--navy); color: #ffffff; border-bottom: 1px solid var(--impl-line); }
-.phase__body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.panel__top { padding: 24px; display: flex; flex-direction: column; gap: 4px; min-height: 120px; justify-content: flex-end; }
+.panel__top h3 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; }
+.panel__body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.meta { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.fill--analyse { background: var(--sky); color: #000000; }
+.fill--bouw { background: var(--blue); color: #ffffff; }
+.fill--impl { background: var(--navy); color: #ffffff; box-shadow: inset 0 0 0 1px var(--impl-line); }
+
 .who { display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px; border-bottom: 1px solid var(--rule); }
 .who__label { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
 .who__name { font-weight: 600; }
@@ -225,50 +381,34 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   width: 6px;
   height: 6px;
   border-radius: 1px;
-  background: var(--blue);
+  background: var(--ui);
   transform: translateY(-2px);
 }
 .ticks li.is-kpi::before { display: none; }
 .ticks li.is-kpi .kpi-dot { transform: translateY(1px); }
 
-/* Timeline */
+/* Ritme: timeline */
 .tl-scroll {
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
 }
-.tl-scroll:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.tl-scroll:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 .tl {
   display: grid;
   grid-template-columns: 10.5rem repeat(7, minmax(6.5rem, 1fr));
   grid-template-rows: repeat(6, auto);
   column-gap: 4px;
   row-gap: 8px;
-  padding: 16px 24px 24px 24px;
+  padding: 16px 24px 24px;
   min-width: 62rem;
 }
 .tl > * { position: relative; z-index: 1; min-width: 0; }
-.tl-off {
-  grid-row: 1 / -1;
-  z-index: 0;
-  background: var(--off-col);
-  border-radius: 4px;
-  margin-block: -8px -12px;
-}
-.tl-label {
-  grid-column: 1;
-  align-self: center;
-  font-size: 13px;
-  font-weight: 600;
-  padding-right: 12px;
-}
+.tl-off { grid-row: 1 / -1; z-index: 0; background: var(--off-col); border-radius: 4px; margin-block: -8px -12px; }
+.tl-label { grid-column: 1; align-self: center; font-size: 13px; font-weight: 600; padding-right: 12px; }
 .tl-label small { display: block; font-weight: 500; color: var(--ink-soft); font-size: 12px; }
-.tl-head {
-  text-align: center;
-  padding-block: 8px 4px;
-  font-variant-numeric: tabular-nums;
-}
+.tl-head { text-align: center; padding-block: 8px 4px; font-variant-numeric: tabular-nums; }
 .tl-head b { display: block; font-size: 13px; }
 .tl-head span { font-size: 12px; color: var(--ink-soft); }
 .tl-pay {
@@ -282,60 +422,69 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   border-radius: 4px;
 }
 .tl-pay--off { color: var(--ink-soft); }
-.tl-pay--on { color: var(--pay-on); box-shadow: inset 0 0 0 1px var(--pay-on); }
+.tl-pay--on { color: var(--ui); box-shadow: inset 0 0 0 1px var(--ui); }
 .bar {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
   min-height: 44px;
   padding: 8px 12px;
+  border: 0;
   border-radius: 4px;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition: filter 0.15s;
 }
+.bar:hover { filter: brightness(1.08); }
+.bar[aria-pressed="true"], .bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 .bar .kpi-dot { margin-left: auto; }
 .bar--analyse { background: var(--sky); color: #000000; }
 .bar--bouw { background: var(--blue); color: #ffffff; }
 .bar--impl { background: var(--navy); color: #ffffff; box-shadow: inset 0 0 0 1px var(--impl-line); }
 .bar--lab { background: var(--lab-fill); color: var(--lab-ink); border: 1px dashed var(--lab-line); }
 
+.tl-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 16px 32px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.tl-detail__head { display: flex; gap: 12px; align-items: flex-start; }
+.tl-detail__head .swatch { margin-top: 4px; }
+.tl-detail__head h3 { font-size: 22px; font-weight: 700; }
+.tl-detail .who { padding-bottom: 0; border-bottom: 0; }
+.tl-detail__also {
+  grid-column: 1 / -1;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
 .legend { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 14px; }
 .legend li { display: flex; align-items: center; gap: 8px; }
-.swatch { width: 16px; height: 16px; border-radius: 4px; flex: none; }
+.swatch { width: 16px; height: 16px; border-radius: 4px; flex: none; display: inline-block; }
 .swatch--analyse { background: var(--sky); }
 .swatch--bouw { background: var(--blue); }
 .swatch--impl { background: var(--navy); box-shadow: inset 0 0 0 1px var(--impl-line); }
 .swatch--lab { background: var(--lab-fill); border: 1px dashed var(--lab-line); }
 .legend b { font-weight: 600; }
 .legend span { color: var(--ink-soft); }
-
-.callout {
-  display: flex;
-  gap: 16px;
-  align-items: baseline;
-  flex-wrap: wrap;
-  font-size: 15px;
-}
-.callout strong { font-weight: 700; }
+.callout { font-size: 15px; font-weight: 700; }
 
 /* Team */
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 600;
-}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.chip { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 4px; font-size: 14px; font-weight: 600; }
 .chip--core { background: var(--blue); color: #ffffff; }
-.chip--guest { box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); }
 .chip--maybe { border: 1px dashed var(--line); color: var(--ink-soft); padding: 5px 11px; }
-.chip small { font-weight: 500; opacity: 0.8; }
-.widget .count { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
-.widget .chips { margin-top: 8px; }
+.count { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
 .maybe-note { font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 8px; margin-top: 4px; }
 .maybe-note i { display: inline-block; width: 16px; height: 12px; border: 1px dashed var(--line); border-radius: 2px; }
 
@@ -350,37 +499,91 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   border-top: 1px solid var(--rule);
 }
 
+@media (max-width: 960px) {
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 860px) {
-  .hero, .grid-3, .grid-2 { grid-template-columns: minmax(0, 1fr); }
+  .hero, .grid-3, .grid-2, .cycle, .tl-detail { grid-template-columns: minmax(0, 1fr); }
   .pillar { padding: 24px; }
-  .pillar--gradient { min-height: 260px; }
-  .page { gap: 56px; padding-block: 16px 48px; }
-  .phase__top { min-height: 0; }
+  .pillar--gradient { min-height: 240px; }
+  .page { gap: 64px; padding-block: 24px 48px; }
+  .panel__top { min-height: 0; }
+}
+@media (max-width: 700px) {
+  .sources { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .source::after { display: none; }
+  .merge { margin: 0; height: 32px; border-top: 0; }
+  .merge::after { top: 0; height: 32px; }
+}
+@media (max-width: 520px) {
+  .tiles { grid-template-columns: minmax(0, 1fr); }
+  .nav .wrap { gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .goal, .tile, .step--phase, .bar { transition: none; }
 }
 </style>
 </head>
 <body>
-<style>body{margin:0}</style>
+<style>body{margin:0}[hidden]{display:none!important}</style>
 
-<div class="page">
-
-  <header class="hero">
-    <div class="pillar pillar--gradient">
-      <p class="eyebrow">SD Worx Nederland · tweede schets</p>
-      <h1>AI Squads</h1>
-      <p class="lead">Elke maand pakken we één proces aan. Twee weken analyseren, twee weken bouwen, twee weken implementeren, in het ritme van de payroll-kalender.</p>
+<nav class="nav" aria-label="Secties">
+  <div class="wrap">
+    <a class="nav__brand" href="#overzicht">AI Squads</a>
+    <div class="nav__links">
+      <a href="#doelen">Doelen</a>
+      <a href="#topickeuze">Topickeuze</a>
+      <a href="#cyclus">Cyclus</a>
+      <a href="#ritme">Ritme</a>
+      <a href="#team">Team</a>
     </div>
-    <div class="pillar goal">
-      <p class="eyebrow">Hoofddoel</p>
-      <p class="goal__text">Elke maand een tastbare, meetbare verbetering in de KPI's van de teams.</p>
-      <p class="goal__note"><span class="kpi-dot" aria-hidden="true"></span>Sluit aan op het NL efficiency target</p>
-    </div>
-  </header>
+  </div>
+</nav>
 
-  <section class="section" aria-labelledby="subdoelen">
+<main class="wrap page">
+
+  <section class="overview" id="overzicht" data-nav-section aria-label="Overzicht">
+    <header class="hero">
+      <div class="pillar pillar--gradient">
+        <p class="eyebrow">SD Worx Nederland · derde schets</p>
+        <h1>AI Squads</h1>
+        <p class="lead">Elke maand pakken we één proces aan. Twee weken analyseren, twee weken bouwen, twee weken implementeren, in het ritme van de payroll-kalender.</p>
+      </div>
+      <a class="pillar goal" href="#doelen">
+        <p class="eyebrow">Hoofddoel</p>
+        <p class="goal__text">Elke maand een tastbare, meetbare verbetering in de KPI's van de teams.</p>
+        <p class="goal__note"><span class="kpi-dot" aria-hidden="true"></span>Sluit aan op het NL efficiency target<span class="goal__more">Subdoelen <span aria-hidden="true">→</span></span></p>
+      </a>
+    </header>
+
+    <div class="tiles">
+      <a class="tile" href="#topickeuze">
+        <span class="tile__label"><span class="eyebrow">Topickeuze</span><span class="arrow" aria-hidden="true">→</span></span>
+        <span class="tile__value">3 wegen</span>
+        <span class="tile__text">Teams, MT en CoE-funnel leveren één topic per maand.</span>
+      </a>
+      <a class="tile" href="#cyclus">
+        <span class="tile__label"><span class="eyebrow">Cyclus</span><span class="arrow" aria-hidden="true">→</span></span>
+        <span class="tile__value">6 weken</span>
+        <span class="tile__text">Analyse, Bouw en Implementatie, elk twee weken.</span>
+      </a>
+      <a class="tile" href="#ritme">
+        <span class="tile__label"><span class="eyebrow">Ritme</span><span class="arrow" aria-hidden="true">→</span></span>
+        <span class="tile__value">Elke 4 weken</span>
+        <span class="tile__text">een nieuwe cyclus, op de off- en on-weken van payroll.</span>
+      </a>
+      <a class="tile" href="#team">
+        <span class="tile__label"><span class="eyebrow">Team</span><span class="arrow" aria-hidden="true">→</span></span>
+        <span class="tile__value">5 + 8</span>
+        <span class="tile__text">Vaste kern plus wisselende deelnemers, nog niet bevestigd.</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" id="doelen" data-nav-section aria-labelledby="doelen-h">
     <div class="section-head">
-      <h2 id="subdoelen">Subdoelen</h2>
-      <p>Wat de squads naast het KPI-resultaat opbouwen.</p>
+      <h2 id="doelen-h">Doelen</h2>
+      <p>Het hoofddoel is elke maand een tastbare, meetbare verbetering in de KPI's van de teams, in lijn met het NL efficiency target. Daarnaast werken de squads aan drie subdoelen.</p>
     </div>
     <ol class="grid-3">
       <li class="widget">
@@ -401,71 +604,112 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
     </ol>
   </section>
 
-  <section class="section" aria-labelledby="cyclus">
+  <section class="section" id="topickeuze" data-nav-section aria-labelledby="topickeuze-h">
     <div class="section-head">
-      <h2 id="cyclus">Eén cyclus: zes weken, drie fasen</h2>
-      <p>Elke fase beslaat één blok van twee weken. Analyse en Implementatie vallen in de off-weken van payroll, Bouw in de on-weken.</p>
+      <h2 id="topickeuze-h">Topickeuze</h2>
+      <p>Een topic komt via een van drie wegen binnen. Elke maand start één topic een nieuwe cyclus, te beginnen met de Analyse.</p>
     </div>
-    <div class="grid-3">
-      <article class="phase phase--analyse">
-        <div class="phase__top">
-          <p class="phase__meta">Week 1–2 · payroll off</p>
-          <h3>Analyse</h3>
-        </div>
-        <div class="phase__body">
-          <div class="who">
-            <span class="who__label">Wie</span>
-            <span class="who__name">Innovatie / Centre of Excellence</span>
-          </div>
-          <ul class="ticks">
-            <li>Meelopen op de afdeling</li>
-            <li>Vastleggen wat er wanneer gebeurt</li>
-            <li>Repetitief werk herkennen</li>
-            <li>Bepalen waar winst te halen valt</li>
-            <li>Processen vastleggen die bij het procesre-design komen kijken</li>
-          </ul>
-        </div>
-      </article>
-      <article class="phase phase--bouw">
-        <div class="phase__top">
-          <p class="phase__meta">Week 3–4 · payroll on</p>
-          <h3>Bouw</h3>
-        </div>
-        <div class="phase__body">
-          <div class="who">
-            <span class="who__label">Wie</span>
-            <span class="who__name">AI-Squad</span>
-          </div>
-          <ul class="ticks">
-            <li>Wekelijkse sessie</li>
-            <li>Oplossing bouwen</li>
-            <li>Processen actief veranderen</li>
-          </ul>
-        </div>
-      </article>
-      <article class="phase phase--impl">
-        <div class="phase__top">
-          <p class="phase__meta">Week 5–6 · payroll off</p>
-          <h3>Implementatie</h3>
-        </div>
-        <div class="phase__body">
-          <div class="who">
-            <span class="who__label">Wie</span>
-            <span class="who__name">Innovatie / Centre of Excellence</span>
-          </div>
-          <ul class="ticks">
-            <li>De verandering landt in het team</li>
-            <li class="is-kpi"><span class="kpi-dot" aria-hidden="true"></span>Verbetering zichtbaar in de KPI's</li>
-          </ul>
-        </div>
-      </article>
+    <div class="funnel">
+      <ol class="sources">
+        <li class="widget source"><p class="eyebrow">Weg 1</p><h3>Vanuit de teams</h3></li>
+        <li class="widget source"><p class="eyebrow">Weg 2</p><h3>Vanuit het MT</h3></li>
+        <li class="widget source"><p class="eyebrow">Weg 3</p><h3>Vanuit de CoE-funnel</h3></li>
+      </ol>
+      <div class="merge" aria-hidden="true"></div>
+      <div class="topic-node">
+        <span class="topic-node__pill">Topic van de maand</span>
+        <small>Eén per maand</small>
+      </div>
+      <a class="next-link" href="#cyclus">Start van de cyclus: Analyse <span aria-hidden="true">↓</span></a>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="ritme">
+  <section class="section" id="cyclus" data-nav-section aria-labelledby="cyclus-h">
     <div class="section-head">
-      <h2 id="ritme">Het ritme: elke vier weken een nieuwe cyclus</h2>
-      <p>De Implementatie van de ene cyclus loopt gelijk met de Analyse van de volgende. In de off-weken draait daarnaast het Experimentation Lab.</p>
+      <h2 id="cyclus-h">Eén cyclus: zes weken, drie fasen</h2>
+      <p>Elke fase beslaat een blok van twee weken. Analyse en Implementatie vallen in de off-weken van payroll, Bouw in de on-weken. Kies een fase voor de details.</p>
+    </div>
+    <div class="cycle">
+      <div class="stepper">
+        <a class="step step--io" href="#topickeuze">
+          <span class="step__mark" aria-hidden="true"></span>
+          <span class="step__text"><b>Topic van de maand</b><small>uit de teams, het MT of de CoE-funnel</small></span>
+        </a>
+        <div class="steps" role="tablist" aria-label="Fasen van een cyclus" aria-orientation="vertical">
+          <button class="step step--phase" type="button" role="tab" id="tab-analyse" aria-controls="panel-analyse" aria-selected="true" tabindex="0">
+            <span class="step__mark fill--analyse" aria-hidden="true"></span>
+            <span class="step__text"><b>Analyse</b><small>Week 1–2 · payroll off</small></span>
+            <span class="step__who">Innovatie / CoE</span>
+          </button>
+          <button class="step step--phase" type="button" role="tab" id="tab-bouw" aria-controls="panel-bouw" aria-selected="false" tabindex="-1">
+            <span class="step__mark fill--bouw" aria-hidden="true"></span>
+            <span class="step__text"><b>Bouw</b><small>Week 3–4 · payroll on</small></span>
+            <span class="step__who">AI-Squad</span>
+          </button>
+          <button class="step step--phase" type="button" role="tab" id="tab-impl" aria-controls="panel-impl" aria-selected="false" tabindex="-1">
+            <span class="step__mark fill--impl" aria-hidden="true"></span>
+            <span class="step__text"><b>Implementatie</b><small>Week 5–6 · payroll off</small></span>
+            <span class="step__who">Innovatie / CoE</span>
+          </button>
+        </div>
+        <div class="step step--io is-kpi">
+          <span class="step__mark" aria-hidden="true"><span class="kpi-dot"></span></span>
+          <span class="step__text"><b>Meetbaar resultaat</b><small>in de KPI's van het team</small></span>
+        </div>
+      </div>
+
+      <div class="panels">
+        <article class="panel" id="panel-analyse" role="tabpanel" aria-labelledby="tab-analyse">
+          <div class="panel__top fill--analyse">
+            <p class="meta">Fase 1 van 3 · week 1–2 · payroll off</p>
+            <h3>Analyse</h3>
+          </div>
+          <div class="panel__body">
+            <div class="who"><span class="who__label">Wie</span><span class="who__name">Innovatie / Centre of Excellence</span></div>
+            <ul class="ticks">
+              <li>Meelopen op de afdeling</li>
+              <li>Vastleggen wat er wanneer gebeurt</li>
+              <li>Repetitief werk herkennen</li>
+              <li>Bepalen waar winst te halen valt</li>
+              <li>Processen vastleggen die bij het procesre-design komen kijken</li>
+            </ul>
+          </div>
+        </article>
+        <article class="panel" id="panel-bouw" role="tabpanel" aria-labelledby="tab-bouw" hidden>
+          <div class="panel__top fill--bouw">
+            <p class="meta">Fase 2 van 3 · week 3–4 · payroll on</p>
+            <h3>Bouw</h3>
+          </div>
+          <div class="panel__body">
+            <div class="who"><span class="who__label">Wie</span><span class="who__name">AI-Squad</span></div>
+            <ul class="ticks">
+              <li>Wekelijkse sessie</li>
+              <li>Oplossing bouwen</li>
+              <li>Processen actief veranderen</li>
+            </ul>
+          </div>
+        </article>
+        <article class="panel" id="panel-impl" role="tabpanel" aria-labelledby="tab-impl" hidden>
+          <div class="panel__top fill--impl">
+            <p class="meta">Fase 3 van 3 · week 5–6 · payroll off</p>
+            <h3>Implementatie</h3>
+          </div>
+          <div class="panel__body">
+            <div class="who"><span class="who__label">Wie</span><span class="who__name">Innovatie / Centre of Excellence</span></div>
+            <ul class="ticks">
+              <li>De verandering landt in het team</li>
+              <li class="is-kpi"><span class="kpi-dot" aria-hidden="true"></span>Verbetering zichtbaar in de KPI's</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ritme" data-nav-section aria-labelledby="ritme-h">
+    <div class="section-head">
+      <h2 id="ritme-h">Het ritme: elke vier weken een nieuwe cyclus</h2>
+      <p>De Implementatie van de ene cyclus loopt gelijk met de Analyse van de volgende. In de off-weken draait daarnaast het Experimentation Lab. Klik op een blok voor de details.</p>
     </div>
 
     <div class="tl-scroll" role="region" aria-label="Tijdlijn van drie overlappende cycli over veertien weken" tabindex="0">
@@ -494,26 +738,42 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
         <div class="tl-pay tl-pay--off" style="grid-column: 8; grid-row: 2">Off</div>
 
         <div class="tl-label" style="grid-row: 3">Experimentation Lab</div>
-        <div class="bar bar--lab" style="grid-column: 2; grid-row: 3">Lab</div>
-        <div class="bar bar--lab" style="grid-column: 4; grid-row: 3">Lab</div>
-        <div class="bar bar--lab" style="grid-column: 6; grid-row: 3">Lab</div>
-        <div class="bar bar--lab" style="grid-column: 8; grid-row: 3">Lab</div>
+        <button class="bar bar--lab" type="button" data-phase="lab" data-col="2" style="grid-column: 2; grid-row: 3">Lab</button>
+        <button class="bar bar--lab" type="button" data-phase="lab" data-col="4" style="grid-column: 4; grid-row: 3">Lab</button>
+        <button class="bar bar--lab" type="button" data-phase="lab" data-col="6" style="grid-column: 6; grid-row: 3">Lab</button>
+        <button class="bar bar--lab" type="button" data-phase="lab" data-col="8" style="grid-column: 8; grid-row: 3">Lab</button>
 
         <div class="tl-label" style="grid-row: 4">Cyclus 1<small>topic maand 1</small></div>
-        <div class="bar bar--analyse" style="grid-column: 2; grid-row: 4">Analyse</div>
-        <div class="bar bar--bouw" style="grid-column: 3; grid-row: 4">Bouw</div>
-        <div class="bar bar--impl" style="grid-column: 4; grid-row: 4">Implementatie<span class="kpi-dot" title="Meetbaar resultaat"></span></div>
+        <button class="bar bar--analyse" type="button" data-phase="analyse" data-cycle="1" data-col="2" style="grid-column: 2; grid-row: 4">Analyse</button>
+        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="1" data-col="3" style="grid-column: 3; grid-row: 4">Bouw</button>
+        <button class="bar bar--impl" type="button" data-phase="impl" data-cycle="1" data-col="4" style="grid-column: 4; grid-row: 4">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
 
         <div class="tl-label" style="grid-row: 5">Cyclus 2<small>topic maand 2</small></div>
-        <div class="bar bar--analyse" style="grid-column: 4; grid-row: 5">Analyse</div>
-        <div class="bar bar--bouw" style="grid-column: 5; grid-row: 5">Bouw</div>
-        <div class="bar bar--impl" style="grid-column: 6; grid-row: 5">Implementatie<span class="kpi-dot" title="Meetbaar resultaat"></span></div>
+        <button class="bar bar--analyse" type="button" data-phase="analyse" data-cycle="2" data-col="4" style="grid-column: 4; grid-row: 5">Analyse</button>
+        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="2" data-col="5" style="grid-column: 5; grid-row: 5">Bouw</button>
+        <button class="bar bar--impl" type="button" data-phase="impl" data-cycle="2" data-col="6" style="grid-column: 6; grid-row: 5">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
 
         <div class="tl-label" style="grid-row: 6">Cyclus 3<small>topic maand 3</small></div>
-        <div class="bar bar--analyse" style="grid-column: 6; grid-row: 6">Analyse</div>
-        <div class="bar bar--bouw" style="grid-column: 7; grid-row: 6">Bouw</div>
-        <div class="bar bar--impl" style="grid-column: 8; grid-row: 6">Implementatie<span class="kpi-dot" title="Meetbaar resultaat"></span></div>
+        <button class="bar bar--analyse" type="button" data-phase="analyse" data-cycle="3" data-col="6" style="grid-column: 6; grid-row: 6">Analyse</button>
+        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="3" data-col="7" style="grid-column: 7; grid-row: 6">Bouw</button>
+        <button class="bar bar--impl" type="button" data-phase="impl" data-cycle="3" data-col="8" style="grid-column: 8; grid-row: 6">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
       </div>
+    </div>
+
+    <div class="tl-detail" aria-live="polite">
+      <div class="tl-detail__head">
+        <span class="swatch swatch--impl" data-swatch aria-hidden="true"></span>
+        <div>
+          <p class="meta" data-meta>Cyclus 1 · week 5–6 · payroll off</p>
+          <h3 data-title>Implementatie</h3>
+        </div>
+      </div>
+      <div class="who" data-who-wrap><span class="who__label">Wie</span><span class="who__name" data-who>Innovatie / Centre of Excellence</span></div>
+      <ul class="ticks" data-items>
+        <li>De verandering landt in het team</li>
+        <li class="is-kpi"><span class="kpi-dot" aria-hidden="true"></span>Verbetering zichtbaar in de KPI's</li>
+      </ul>
+      <p class="tl-detail__also" data-also>Tegelijk in dit blok: Experimentation Lab en Analyse (cyclus 2).</p>
     </div>
 
     <ul class="legend">
@@ -524,12 +784,12 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
       <li><span class="kpi-dot" aria-hidden="true"></span><b>Meetbaar resultaat</b><span>in de KPI's van het team</span></li>
     </ul>
 
-    <p class="callout"><strong>Vanaf week 6 levert elke vier weken een cyclus resultaat op.</strong></p>
+    <p class="callout">Vanaf week 6 levert elke vier weken een cyclus resultaat op.</p>
   </section>
 
-  <section class="section" aria-labelledby="team">
+  <section class="section" id="team" data-nav-section aria-labelledby="team-h">
     <div class="section-head">
-      <h2 id="team">Wie doet mee</h2>
+      <h2 id="team-h">Wie doet mee</h2>
       <p>Een vaste kern draagt elke cyclus. De wisselende deelnemers sluiten per topic aan, afhankelijk van het onderwerp en hun beschikbaarheid.</p>
     </div>
     <div class="grid-2">
@@ -563,10 +823,113 @@ h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
   </section>
 
   <footer class="foot">
-    <span>AI Squads · tweede schets</span>
+    <span>AI Squads · derde schets</span>
     <span>15 oktober 2026</span>
   </footer>
 
-</div>
+</main>
+
+<script>
+(function () {
+  var PHASES = {
+    analyse: { name: 'Analyse', who: 'Innovatie / Centre of Excellence', swatch: 'swatch--analyse' },
+    bouw: { name: 'Bouw', who: 'AI-Squad', swatch: 'swatch--bouw' },
+    impl: { name: 'Implementatie', who: 'Innovatie / Centre of Excellence', swatch: 'swatch--impl' },
+    lab: { name: 'Experimentation Lab', who: '', swatch: 'swatch--lab' }
+  };
+  var toArray = function (list) { return Array.prototype.slice.call(list); };
+
+  /* Cyclus: phase stepper works as vertical tabs */
+  var tabs = toArray(document.querySelectorAll('.step--phase'));
+  function selectTab(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { selectTab(t); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      e.preventDefault();
+      var next = tabs[(i + (e.key === 'ArrowDown' ? 1 : tabs.length - 1)) % tabs.length];
+      selectTab(next);
+      next.focus();
+    });
+  });
+
+  /* Ritme: each timeline block shows its details below the timeline.
+     Phase activities are read from the Cyclus panels so they live in one place. */
+  var bars = toArray(document.querySelectorAll('.tl .bar'));
+  var detail = document.querySelector('.tl-detail');
+  function part(sel) { return detail.querySelector(sel); }
+  function weeks(col) { var b = col - 1; return 'week ' + (2 * b - 1) + '–' + (2 * b); }
+  function payroll(col) { return (col - 1) % 2 === 1 ? 'payroll off' : 'payroll on'; }
+  function label(bar) {
+    var name = PHASES[bar.dataset.phase].name;
+    return bar.dataset.cycle ? name + ' (cyclus ' + bar.dataset.cycle + ')' : name;
+  }
+  function items(phase) {
+    if (phase === 'lab') {
+      var li = document.createElement('li');
+      li.textContent = 'Draait in de off-weken van payroll, naast Analyse en Implementatie';
+      return [li];
+    }
+    return toArray(document.querySelectorAll('#panel-' + phase + ' .ticks > li')).map(function (n) { return n.cloneNode(true); });
+  }
+  function joinNl(list) {
+    return list.length < 2 ? list.join('') : list.slice(0, -1).join(', ') + ' en ' + list[list.length - 1];
+  }
+  function selectBar(bar) {
+    var phase = bar.dataset.phase, col = Number(bar.dataset.col), p = PHASES[phase];
+    bars.forEach(function (b) { b.setAttribute('aria-pressed', b === bar ? 'true' : 'false'); });
+    part('[data-meta]').textContent = (bar.dataset.cycle ? 'Cyclus ' + bar.dataset.cycle + ' · ' : '') + weeks(col) + ' · ' + payroll(col);
+    part('[data-title]').textContent = p.name;
+    part('[data-swatch]').className = 'swatch ' + p.swatch;
+    part('[data-who-wrap]').hidden = !p.who;
+    part('[data-who]').textContent = p.who;
+    var list = part('[data-items]');
+    list.textContent = '';
+    items(phase).forEach(function (li) { list.appendChild(li); });
+    var others = bars.filter(function (b) { return b !== bar && Number(b.dataset.col) === col; }).map(label);
+    var also = part('[data-also]');
+    also.hidden = others.length === 0;
+    also.textContent = others.length ? 'Tegelijk in dit blok: ' + joinNl(others) + '.' : '';
+  }
+  bars.forEach(function (b) {
+    b.setAttribute('aria-label', label(b) + ', ' + weeks(Number(b.dataset.col)));
+    b.addEventListener('click', function () { selectBar(b); });
+  });
+  var first = document.querySelector('.tl .bar[data-cycle="1"][data-phase="impl"]');
+  if (first) selectBar(first);
+
+  /* Nav: highlight the section in view */
+  var links = toArray(document.querySelectorAll('.nav__links a'));
+  var linkBar = document.querySelector('.nav__links');
+  function setActive(id) {
+    links.forEach(function (a) {
+      if (a.getAttribute('href') !== '#' + id) { a.removeAttribute('aria-current'); return; }
+      a.setAttribute('aria-current', 'true');
+      var left = a.offsetLeft, right = left + a.offsetWidth;
+      if (left < linkBar.scrollLeft || right > linkBar.scrollLeft + linkBar.clientWidth) linkBar.scrollLeft = left - 16;
+    });
+  }
+  links.forEach(function (a) {
+    a.addEventListener('click', function () { setActive(a.getAttribute('href').slice(1)); });
+  });
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) setActive(e.target.id); });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+    toArray(document.querySelectorAll('[data-nav-section]')).forEach(function (s) { observer.observe(s); });
+  }
+  window.addEventListener('scroll', function () {
+    var doc = document.documentElement;
+    if (window.innerHeight + window.scrollY >= doc.scrollHeight - 4) setActive('team');
+  }, { passive: true });
+})();
+</script>
 </body>
 </html>
