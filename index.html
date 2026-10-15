@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Squads</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: SD Worx pillar layout. Gradient pillar + white goal widget, then three phase pillars,
+   an overlapping block timeline on the payroll rhythm, and the team. Base unit X = 8px. */
+:root {
+  /* SD Worx palette (fixed brand values, used as fills with fixed ink pairs) */
+  --blue: #006dd8;
+  --navy: #001c52;
+  --persian: #000d3a;
+  --azure: #38a1ff;
+  --sky: #9ed2ff;
+  --icy: #d9f1ff;
+  --yellow: #ffbe00;
+
+  /* Theme tokens */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --ink: #000000;
+  --ink-soft: rgba(0, 0, 0, 0.72);
+  --label: #006dd8;
+  --line: #000000;
+  --rule: rgba(0, 28, 82, 0.14);
+  --off-col: rgba(217, 241, 255, 0.6);
+  --lab-fill: #ffffff;
+  --lab-line: #006dd8;
+  --lab-ink: #006dd8;
+  --impl-line: #001c52;
+  --pay-on: #006dd8;
+  --focus: #006dd8;
+
+  --font: 'Inter', -apple-system, 'Segoe UI', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000d3a;
+    --surface: #001c52;
+    --ink: #ffffff;
+    --ink-soft: rgba(255, 255, 255, 0.78);
+    --label: #ffffff;
+    --line: rgba(158, 210, 255, 0.45);
+    --rule: rgba(158, 210, 255, 0.18);
+    --off-col: rgba(158, 210, 255, 0.08);
+    --lab-fill: #001c52;
+    --lab-line: #9ed2ff;
+    --lab-ink: #ffffff;
+    --impl-line: rgba(158, 210, 255, 0.6);
+    --pay-on: #9ed2ff;
+    --focus: #9ed2ff;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000d3a;
+  --surface: #001c52;
+  --ink: #ffffff;
+  --ink-soft: rgba(255, 255, 255, 0.78);
+  --label: #ffffff;
+  --line: rgba(158, 210, 255, 0.45);
+  --rule: rgba(158, 210, 255, 0.18);
+  --off-col: rgba(158, 210, 255, 0.08);
+  --lab-fill: #001c52;
+  --lab-line: #9ed2ff;
+  --lab-ink: #ffffff;
+  --impl-line: rgba(158, 210, 255, 0.6);
+  --pay-on: #9ed2ff;
+  --focus: #9ed2ff;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p, ul, ol { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
+
+.page {
+  max-width: 1168px;
+  margin: 0 auto;
+  padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+
+/* Hero: gradient pillar beside a white goal widget */
+.hero {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+}
+.pillar { border-radius: 8px; padding: 40px; min-width: 0; }
+.pillar--gradient {
+  background: linear-gradient(140deg, var(--blue) 0%, var(--navy) 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 16px;
+  min-height: 320px;
+}
+.pillar--gradient .eyebrow { color: #ffffff; }
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 3.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+.lead { font-size: 18px; max-width: 34em; }
+
+.goal {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+.goal__text {
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.goal__note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.kpi-dot {
+  display: inline-block;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 0 1px var(--navy);
+}
+
+/* Section heads */
+.section { display: flex; flex-direction: column; gap: 24px; }
+.section-head { display: flex; flex-direction: column; gap: 8px; max-width: 44em; }
+.section-head h2 { font-size: clamp(1.625rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.02em; }
+.section-head p { color: var(--ink-soft); }
+
+/* Widgets */
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.widget {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.widget h3 { font-size: 20px; font-weight: 700; }
+.widget p { color: var(--ink-soft); }
+
+/* Phase pillars */
+.phase {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.phase__top {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 132px;
+  justify-content: flex-end;
+}
+.phase__top h3 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+.phase__meta { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.phase--analyse .phase__top { background: var(--sky); color: #000000; }
+.phase--bouw .phase__top { background: var(--blue); color: #ffffff; }
+.phase--impl .phase__top { background: var(--navy); color: #ffffff; border-bottom: 1px solid var(--impl-line); }
+.phase__body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.who { display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px; border-bottom: 1px solid var(--rule); }
+.who__label { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
+.who__name { font-weight: 600; }
+.ticks { display: flex; flex-direction: column; gap: 8px; }
+.ticks li { display: flex; gap: 12px; align-items: baseline; }
+.ticks li::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--blue);
+  transform: translateY(-2px);
+}
+.ticks li.is-kpi::before { display: none; }
+.ticks li.is-kpi .kpi-dot { transform: translateY(1px); }
+
+/* Timeline */
+.tl-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.tl-scroll:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.tl {
+  display: grid;
+  grid-template-columns: 10.5rem repeat(7, minmax(6.5rem, 1fr));
+  grid-template-rows: repeat(6, auto);
+  column-gap: 4px;
+  row-gap: 8px;
+  padding: 16px 24px 24px 24px;
+  min-width: 62rem;
+}
+.tl > * { position: relative; z-index: 1; min-width: 0; }
+.tl-off {
+  grid-row: 1 / -1;
+  z-index: 0;
+  background: var(--off-col);
+  border-radius: 4px;
+  margin-block: -8px -12px;
+}
+.tl-label {
+  grid-column: 1;
+  align-self: center;
+  font-size: 13px;
+  font-weight: 600;
+  padding-right: 12px;
+}
+.tl-label small { display: block; font-weight: 500; color: var(--ink-soft); font-size: 12px; }
+.tl-head {
+  text-align: center;
+  padding-block: 8px 4px;
+  font-variant-numeric: tabular-nums;
+}
+.tl-head b { display: block; font-size: 13px; }
+.tl-head span { font-size: 12px; color: var(--ink-soft); }
+.tl-pay {
+  justify-self: center;
+  align-self: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+.tl-pay--off { color: var(--ink-soft); }
+.tl-pay--on { color: var(--pay-on); box-shadow: inset 0 0 0 1px var(--pay-on); }
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.bar .kpi-dot { margin-left: auto; }
+.bar--analyse { background: var(--sky); color: #000000; }
+.bar--bouw { background: var(--blue); color: #ffffff; }
+.bar--impl { background: var(--navy); color: #ffffff; box-shadow: inset 0 0 0 1px var(--impl-line); }
+.bar--lab { background: var(--lab-fill); color: var(--lab-ink); border: 1px dashed var(--lab-line); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 14px; }
+.legend li { display: flex; align-items: center; gap: 8px; }
+.swatch { width: 16px; height: 16px; border-radius: 4px; flex: none; }
+.swatch--analyse { background: var(--sky); }
+.swatch--bouw { background: var(--blue); }
+.swatch--impl { background: var(--navy); box-shadow: inset 0 0 0 1px var(--impl-line); }
+.swatch--lab { background: var(--lab-fill); border: 1px dashed var(--lab-line); }
+.legend b { font-weight: 600; }
+.legend span { color: var(--ink-soft); }
+
+.callout {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  font-size: 15px;
+}
+.callout strong { font-weight: 700; }
+
+/* Team */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.chip--core { background: var(--blue); color: #ffffff; }
+.chip--guest { box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); }
+.chip--maybe { border: 1px dashed var(--line); color: var(--ink-soft); padding: 5px 11px; }
+.chip small { font-weight: 500; opacity: 0.8; }
+.widget .count { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
+.widget .chips { margin-top: 8px; }
+.maybe-note { font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.maybe-note i { display: inline-block; width: 16px; height: 12px; border: 1px dashed var(--line); border-radius: 2px; }
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--ink-soft);
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+
+@media (max-width: 860px) {
+  .hero, .grid-3, .grid-2 { grid-template-columns: minmax(0, 1fr); }
+  .pillar { padding: 24px; }
+  .pillar--gradient { min-height: 260px; }
+  .page { gap: 56px; padding-block: 16px 48px; }
+  .phase__top { min-height: 0; }
+}
+</style>
+</head>
+<body>
+<style>body{margin:0}</style>
+
+<div class="page">
+
+  <header class="hero">
+    <div class="pillar pillar--gradient">
+      <p class="eyebrow">SD Worx Nederland · eerste schets</p>
+      <h1>AI Squads</h1>
+      <p class="lead">Elke maand pakken we één proces aan. Twee weken analyseren, twee weken bouwen, twee weken implementeren, in het ritme van de payroll-kalender.</p>
+    </div>
+    <div class="pillar goal">
+      <p class="eyebrow">Hoofddoel</p>
+      <p class="goal__text">Elke maand een tastbare, meetbare verbetering in de KPI's van de teams.</p>
+      <p class="goal__note"><span class="kpi-dot" aria-hidden="true"></span>Sluit aan op het NL efficiency target</p>
+    </div>
+  </header>
+
+  <section class="section" aria-labelledby="subdoelen">
+    <div class="section-head">
+      <h2 id="subdoelen">Subdoelen</h2>
+      <p>Wat de squads naast het KPI-resultaat opbouwen.</p>
+    </div>
+    <ol class="grid-3">
+      <li class="widget">
+        <p class="eyebrow">Subdoel 1</p>
+        <h3>Processen in kaart</h3>
+        <p>We brengen de processen van de organisatie beter in kaart.</p>
+      </li>
+      <li class="widget">
+        <p class="eyebrow">Subdoel 2</p>
+        <h3>Verdieping in AI</h3>
+        <p>De kerngroep bouwt diepere AI-knowhow op.</p>
+      </li>
+      <li class="widget">
+        <p class="eyebrow">Subdoel 3</p>
+        <h3>Agentic werken</h3>
+        <p>Agentic werken wordt werkelijkheid.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="section" aria-labelledby="cyclus">
+    <div class="section-head">
+      <h2 id="cyclus">Eén cyclus: zes weken, drie fasen</h2>
+      <p>Elke fase beslaat één blok van twee weken. Analyse en Implementatie vallen in de off-weken van payroll, Bouw in de on-weken.</p>
+    </div>
+    <div class="grid-3">
+      <article class="phase phase--analyse">
+        <div class="phase__top">
+          <p class="phase__meta">Week 1–2 · payroll off</p>
+          <h3>Analyse</h3>
+        </div>
+        <div class="phase__body">
+          <div class="who">
+            <span class="who__label">Wie</span>
+            <span class="who__name">Innovatie / Centre of Excellence</span>
+          </div>
+          <ul class="ticks">
+            <li>Meelopen op de afdeling</li>
+            <li>Vastleggen wat er wanneer gebeurt</li>
+            <li>Repetitief werk herkennen</li>
+            <li>Bepalen waar winst te halen valt</li>
+          </ul>
+        </div>
+      </article>
+      <article class="phase phase--bouw">
+        <div class="phase__top">
+          <p class="phase__meta">Week 3–4 · payroll on</p>
+          <h3>Bouw</h3>
+        </div>
+        <div class="phase__body">
+          <div class="who">
+            <span class="who__label">Wie</span>
+            <span class="who__name">AI-Squad</span>
+          </div>
+          <ul class="ticks">
+            <li>Oplossing bouwen</li>
+            <li>Processen actief veranderen</li>
+          </ul>
+        </div>
+      </article>
+      <article class="phase phase--impl">
+        <div class="phase__top">
+          <p class="phase__meta">Week 5–6 · payroll off</p>
+          <h3>Implementatie</h3>
+        </div>
+        <div class="phase__body">
+          <div class="who">
+            <span class="who__label">Wie</span>
+            <span class="who__name">AI-Squad</span>
+          </div>
+          <ul class="ticks">
+            <li>De verandering landt in het team</li>
+            <li class="is-kpi"><span class="kpi-dot" aria-hidden="true"></span>Verbetering zichtbaar in de KPI's</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ritme">
+    <div class="section-head">
+      <h2 id="ritme">Het ritme: elke vier weken een nieuwe cyclus</h2>
+      <p>De Implementatie van de ene cyclus loopt gelijk met de Analyse van de volgende. In de off-weken draait daarnaast het Experimentation Lab.</p>
+    </div>
+
+    <div class="tl-scroll" role="region" aria-label="Tijdlijn van drie overlappende cycli over veertien weken" tabindex="0">
+      <div class="tl">
+        <div class="tl-off" style="grid-column: 2" aria-hidden="true"></div>
+        <div class="tl-off" style="grid-column: 4" aria-hidden="true"></div>
+        <div class="tl-off" style="grid-column: 6" aria-hidden="true"></div>
+        <div class="tl-off" style="grid-column: 8" aria-hidden="true"></div>
+
+        <div class="tl-label" style="grid-row: 1"></div>
+        <div class="tl-head" style="grid-column: 2; grid-row: 1"><b>Blok 1</b><span>wk 1–2</span></div>
+        <div class="tl-head" style="grid-column: 3; grid-row: 1"><b>Blok 2</b><span>wk 3–4</span></div>
+        <div class="tl-head" style="grid-column: 4; grid-row: 1"><b>Blok 3</b><span>wk 5–6</span></div>
+        <div class="tl-head" style="grid-column: 5; grid-row: 1"><b>Blok 4</b><span>wk 7–8</span></div>
+        <div class="tl-head" style="grid-column: 6; grid-row: 1"><b>Blok 5</b><span>wk 9–10</span></div>
+        <div class="tl-head" style="grid-column: 7; grid-row: 1"><b>Blok 6</b><span>wk 11–12</span></div>
+        <div class="tl-head" style="grid-column: 8; grid-row: 1"><b>Blok 7</b><span>wk 13–14</span></div>
+
+        <div class="tl-label" style="grid-row: 2">Payroll</div>
+        <div class="tl-pay tl-pay--off" style="grid-column: 2; grid-row: 2">Off</div>
+        <div class="tl-pay tl-pay--on" style="grid-column: 3; grid-row: 2">On</div>
+        <div class="tl-pay tl-pay--off" style="grid-column: 4; grid-row: 2">Off</div>
+        <div class="tl-pay tl-pay--on" style="grid-column: 5; grid-row: 2">On</div>
+        <div class="tl-pay tl-pay--off" style="grid-column: 6; grid-row: 2">Off</div>
+        <div class="tl-pay tl-pay--on" style="grid-column: 7; grid-row: 2">On</div>
+        <div class="tl-pay tl-pay--off" style="grid-column: 8; grid-row: 2">Off</div>
+
+        <div class="tl-label" style="grid-row: 3">Experimentation Lab</div>
+        <div class="bar bar--lab" style="grid-column: 2; grid-row: 3">Lab</div>
+        <div class="bar bar--lab" style="grid-column: 4; grid-row: 3">Lab</div>
+        <div class="bar bar--lab" style="grid-column: 6; grid-row: 3">Lab</div>
+        <div class="bar bar--lab" style="grid-column: 8; grid-row: 3">Lab</div>
+
+        <div class="tl-label" style="grid-row: 4">Cyclus 1<small>topic maand 1</small></div>
+        <div class="bar bar--analyse" style="grid-column: 2; grid-row: 4">Analyse</div>
+        <div class="bar bar--bouw" style="grid-column: 3; grid-row: 4">Bouw</div>
+        <div class="bar bar--impl" style="grid-column: 4; grid-row: 4">Implementatie<span class="kpi-dot" title="Meetbaar resultaat"></span></div>
+
+        <div class="tl-label" style="grid-row: 5">Cyclus 2<small>topic maand 2</small></div>
+        <div class="bar bar--analyse" style="grid-column: 4; grid-row: 5">Analyse</div>
+        <div class="bar bar--bouw" style="grid-column: 5; grid-row: 5">Bouw</div>
+        <div class="bar bar--impl" style="grid-column: 6; grid-row: 5">Implementatie<span class="kpi-dot" title="Meetbaar resultaat"></span></div>
+
+        <div class="tl-label" style="grid-row: 6">Cyclus 3<small>topic maand 3</small></div>
+        <div class="bar bar--analyse" style="grid-column: 6; grid-row: 6">Analyse</div>
+        <div class="bar bar--bouw" style="grid-column: 7; grid-row: 6">Bouw</div>
+        <div class="bar bar--impl" style="grid-column: 8; grid-row: 6">Implementatie<span class="kpi-dot" title="Meetbaar resultaat"></span></div>
+      </div>
+    </div>
+
+    <ul class="legend">
+      <li><i class="swatch swatch--analyse"></i><b>Analyse</b><span>Innovatie / CoE</span></li>
+      <li><i class="swatch swatch--bouw"></i><b>Bouw</b><span>AI-Squad</span></li>
+      <li><i class="swatch swatch--impl"></i><b>Implementatie</b><span>AI-Squad</span></li>
+      <li><i class="swatch swatch--lab"></i><b>Experimentation Lab</b><span>off-weken</span></li>
+      <li><span class="kpi-dot" aria-hidden="true"></span><b>Meetbaar resultaat</b><span>in de KPI's van het team</span></li>
+    </ul>
+
+    <p class="callout"><strong>Vanaf week 6 levert elke vier weken een cyclus resultaat op.</strong></p>
+  </section>
+
+  <section class="section" aria-labelledby="team">
+    <div class="section-head">
+      <h2 id="team">Wie doet mee</h2>
+      <p>Een vaste kern draagt elke cyclus. Per topic sluiten collega's aan, afhankelijk van het onderwerp en hun beschikbaarheid.</p>
+    </div>
+    <div class="grid-2">
+      <div class="widget">
+        <p class="count">Vaste kern · 5</p>
+        <h3>Elke cyclus</h3>
+        <ul class="chips">
+          <li class="chip chip--core">Wesley</li>
+          <li class="chip chip--core">Melanie</li>
+          <li class="chip chip--core">Nick</li>
+          <li class="chip chip--core">Bob</li>
+          <li class="chip chip--core">Caitlin</li>
+        </ul>
+      </div>
+      <div class="widget">
+        <p class="count">Mogelijke toevoegingen · 7</p>
+        <h3>Per topic en beschikbaarheid</h3>
+        <ul class="chips">
+          <li class="chip chip--guest">Tatum</li>
+          <li class="chip chip--guest">Hans</li>
+          <li class="chip chip--guest">Ward</li>
+          <li class="chip chip--guest">Nick <small>team Astrid</small></li>
+          <li class="chip chip--guest">Prem</li>
+          <li class="chip chip--maybe">Jesper</li>
+          <li class="chip chip--maybe">Rens</li>
+        </ul>
+        <p class="maybe-note"><i aria-hidden="true"></i>Nog onzeker</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>AI Squads · eerste schets</span>
+    <span>15 oktober 2026</span>
+  </footer>
+
+</div>
+</body>
+</html>
