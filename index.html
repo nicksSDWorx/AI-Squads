@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
-/* Layout: sticky section nav over one scrolling page. Overview first (gradient pillar, goal widget,
-   four jump tiles), then Doelen (hoofddoel + subdoelen), Topickeuze (intake + quarter calendar strip),
+/* Layout: sticky section nav over one scrolling page. Overview first (gradient pillar beside the
+   goal widget), then Doelen (hoofddoel + subdoelen), Topickeuze (intake + quarter calendar strip),
    Cyclus (phase stepper with the detail panel beside it), Ritme (overlapping 14-week timeline) and Team.
    Base unit X = 8px. */
 :root {
@@ -196,25 +196,7 @@ button { font: inherit; color: inherit; }
 }
 .goal__more { margin-left: auto; font-weight: 600; color: var(--label); white-space: nowrap; }
 
-.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-.tile {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  text-decoration: none;
-  min-width: 0;
-  transition: background-color 0.15s;
-}
-.tile:hover { background: var(--hover-bg); }
-.tile__label { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.tile__value { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; font-variant-numeric: tabular-nums; text-wrap: balance; }
-.tile__text { font-size: 14px; color: var(--ink-soft); }
-.arrow { color: var(--label); font-weight: 700; }
-.goal:focus-visible, .tile:focus-visible, .next-link:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
+.goal:focus-visible, .next-link:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 
 .kpi-dot {
   display: inline-block;
@@ -548,9 +530,6 @@ button.bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   .quarters { grid-template-columns: minmax(0, 1fr); }
   .quarter:not(:last-child)::after { content: "↓"; right: auto; left: 50%; bottom: -21px; transform: translateX(-50%); }
 }
-@media (max-width: 960px) {
-  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 @media (max-width: 860px) {
   .hero, .grid-3, .grid-2, .cycle, .legend-box { grid-template-columns: minmax(0, 1fr); }
   .pillar { padding: 24px; }
@@ -560,13 +539,12 @@ button.bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   .panel__top { min-height: 0; }
 }
 @media (max-width: 520px) {
-  .tiles { grid-template-columns: minmax(0, 1fr); }
   .nav .wrap { gap: 12px; }
   .legend li { grid-template-columns: 16px minmax(0, 1fr); }
   .legend li > span:last-child:not(.kpi-dot) { grid-column: 2; margin-top: -6px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .goal, .tile, .step--phase, button.bar { transition: none; }
+  .goal, .step--phase, button.bar { transition: none; }
 }
 </style>
 </head>
@@ -602,28 +580,6 @@ button.bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
       </a>
     </header>
 
-    <div class="tiles">
-      <a class="tile" href="#topickeuze">
-        <span class="tile__label"><span class="eyebrow">Topickeuze</span><span class="arrow" aria-hidden="true">→</span></span>
-        <span class="tile__value">3 wegen</span>
-        <span class="tile__text">Teams, MT en CoE-funnel. Per kwartaal kiezen we de topics.</span>
-      </a>
-      <a class="tile" href="#cyclus">
-        <span class="tile__label"><span class="eyebrow">Cyclus</span><span class="arrow" aria-hidden="true">→</span></span>
-        <span class="tile__value">6 weken</span>
-        <span class="tile__text">Bouw met de AI-Squad, Analyse en Implementatie bij Innovatie en CoE.</span>
-      </a>
-      <a class="tile" href="#ritme">
-        <span class="tile__label"><span class="eyebrow">Ritme</span><span class="arrow" aria-hidden="true">→</span></span>
-        <span class="tile__value">Elke 4 weken</span>
-        <span class="tile__text">een nieuwe cyclus, op de off- en on-weken van payroll.</span>
-      </a>
-      <a class="tile" href="#team">
-        <span class="tile__label"><span class="eyebrow">Team</span><span class="arrow" aria-hidden="true">→</span></span>
-        <span class="tile__value">Vaste kern + wisselende deelnemers</span>
-        <span class="tile__text">De wisselende deelnemers sluiten per topic aan.</span>
-      </a>
-    </div>
   </section>
 
   <section class="section" id="doelen" data-nav-section aria-labelledby="doelen-h">
@@ -640,7 +596,7 @@ button.bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
       <ol class="grid-3">
         <li class="widget">
           <p class="eyebrow">Subdoel 1</p>
-          <h3>Processen in kaart</h3>
+          <h3>Proces Re-design</h3>
           <p>We brengen de processen van de organisatie beter in kaart.</p>
         </li>
         <li class="widget">
