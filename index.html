@@ -414,6 +414,20 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 }
 .ticks li.is-kpi::before { display: none; }
 .ticks li.is-kpi .kpi-dot { transform: translateY(1px); }
+.ticks li.is-session::before { display: none; }
+.ticks li.is-session { font-weight: 600; }
+
+.owner { flex: none; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+.owner--squad { background: var(--blue); color: #ffffff; }
+.owner--coe { box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); }
+.pip { display: inline-block; flex: none; width: 10px; height: 10px; border-radius: 2px; background: var(--ui); }
+.pips { display: inline-flex; gap: 4px; margin-left: auto; }
+.bar--bouw .pip { background: #ffffff; }
+.sessions { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 8px; background: var(--sel-bg); }
+.sessions__title { font-weight: 700; }
+.sessions__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.sessions__list li { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 4px; background: var(--surface); border: 1px solid var(--line); }
+.sessions__list small { margin-left: auto; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 
 /* Ritme: timeline */
 .tl-scroll {
@@ -576,7 +590,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   <section class="overview" id="overzicht" data-nav-section aria-label="Overzicht">
     <header class="hero">
       <div class="pillar pillar--gradient">
-        <p class="eyebrow">SD Worx Nederland · vierde schets</p>
+        <p class="eyebrow">SD Worx Nederland · vijfde schets</p>
         <h1>AI Squads</h1>
         <p class="lead">Elke maand pakken we één proces aan. Twee weken analyseren, twee weken bouwen, twee weken implementeren, in het ritme van de payroll-kalender.</p>
       </div>
@@ -596,7 +610,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
       <a class="tile" href="#cyclus">
         <span class="tile__label"><span class="eyebrow">Cyclus</span><span class="arrow" aria-hidden="true">→</span></span>
         <span class="tile__value">6 weken</span>
-        <span class="tile__text">Analyse, Bouw en Implementatie, elk twee weken.</span>
+        <span class="tile__text">Bouw met de AI-Squad, Analyse en Implementatie bij Innovatie en CoE.</span>
       </a>
       <a class="tile" href="#ritme">
         <span class="tile__label"><span class="eyebrow">Ritme</span><span class="arrow" aria-hidden="true">→</span></span>
@@ -665,7 +679,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   <section class="section" id="cyclus" data-nav-section aria-labelledby="cyclus-h">
     <div class="section-head">
       <h2 id="cyclus-h">Eén cyclus: zes weken, drie fasen</h2>
-      <p>Elke fase beslaat een blok van twee weken. Analyse en Implementatie vallen in de off-weken van payroll, Bouw in de on-weken. Kies een fase voor de details.</p>
+      <p>Elke fase beslaat een blok van twee weken. Analyse en Implementatie vallen in de off-weken van payroll en worden in principe gedragen door Innovatie en CoE. In de Bouw, in de on-weken, komt de AI-Squad elke week één keer bij elkaar. Kies een fase voor de details.</p>
     </div>
     <div class="cycle">
       <div class="stepper">
@@ -677,17 +691,17 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
           <button class="step step--phase" type="button" role="tab" id="tab-analyse" aria-controls="panel-analyse" aria-selected="true" tabindex="0">
             <span class="step__mark fill--analyse" aria-hidden="true"></span>
             <span class="step__text"><b>Analyse</b><small>Week 1–2 · payroll off</small></span>
-            <span class="step__who">Innovatie / CoE</span>
+            <span class="owner owner--coe">Innovatie en CoE</span>
           </button>
           <button class="step step--phase" type="button" role="tab" id="tab-bouw" aria-controls="panel-bouw" aria-selected="false" tabindex="-1">
             <span class="step__mark fill--bouw" aria-hidden="true"></span>
-            <span class="step__text"><b>Bouw</b><small>Week 3–4 · payroll on</small></span>
-            <span class="step__who">AI-Squad</span>
+            <span class="step__text"><b>Bouw</b><small>Week 3–4 · payroll on · 1 sessie per week</small></span>
+            <span class="owner owner--squad">AI-Squad</span>
           </button>
           <button class="step step--phase" type="button" role="tab" id="tab-impl" aria-controls="panel-impl" aria-selected="false" tabindex="-1">
             <span class="step__mark fill--impl" aria-hidden="true"></span>
             <span class="step__text"><b>Implementatie</b><small>Week 5–6 · payroll off</small></span>
-            <span class="step__who">Innovatie / CoE</span>
+            <span class="owner owner--coe">Innovatie en CoE</span>
           </button>
         </div>
         <div class="step step--io is-kpi">
@@ -703,7 +717,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
             <h3>Analyse</h3>
           </div>
           <div class="panel__body">
-            <div class="who"><span class="who__label">Wie</span><span class="who__name">Innovatie / Centre of Excellence</span></div>
+            <div class="who"><span class="who__label">In principe gedragen door</span><span class="who__name">Innovatie en Centre of Excellence</span></div>
             <ul class="ticks">
               <li>Meelopen op de afdeling</li>
               <li>Vastleggen wat er wanneer gebeurt</li>
@@ -719,9 +733,15 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
             <h3>Bouw</h3>
           </div>
           <div class="panel__body">
-            <div class="who"><span class="who__label">Wie</span><span class="who__name">AI-Squad</span></div>
+            <div class="who"><span class="who__label">Gedragen door</span><span class="who__name">AI-Squad</span></div>
+            <div class="sessions">
+              <p class="sessions__title">Elke week één sessie waarin de AI-Squad bij elkaar komt</p>
+              <ol class="sessions__list">
+                <li><span class="pip" aria-hidden="true"></span><b>Sessie 1</b><small>week 3</small></li>
+                <li><span class="pip" aria-hidden="true"></span><b>Sessie 2</b><small>week 4</small></li>
+              </ol>
+            </div>
             <ul class="ticks">
-              <li>Wekelijkse sessie</li>
               <li>Oplossing bouwen</li>
               <li>Processen actief veranderen</li>
             </ul>
@@ -733,7 +753,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
             <h3>Implementatie</h3>
           </div>
           <div class="panel__body">
-            <div class="who"><span class="who__label">Wie</span><span class="who__name">Innovatie / Centre of Excellence</span></div>
+            <div class="who"><span class="who__label">In principe gedragen door</span><span class="who__name">Innovatie en Centre of Excellence</span></div>
             <ul class="ticks">
               <li>De verandering landt in het team</li>
               <li class="is-kpi"><span class="kpi-dot" aria-hidden="true"></span>Verbetering zichtbaar in de KPI's</li>
@@ -783,17 +803,17 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 
         <div class="tl-label" style="grid-row: 4">Cyclus 1<small>topic maand 1</small></div>
         <button class="bar bar--analyse" type="button" data-phase="analyse" data-cycle="1" data-col="2" style="grid-column: 2; grid-row: 4">Analyse</button>
-        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="1" data-col="3" style="grid-column: 3; grid-row: 4">Bouw</button>
+        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="1" data-col="3" style="grid-column: 3; grid-row: 4">Bouw<span class="pips" aria-hidden="true"><i class="pip"></i><i class="pip"></i></span></button>
         <button class="bar bar--impl" type="button" data-phase="impl" data-cycle="1" data-col="4" style="grid-column: 4; grid-row: 4">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
 
         <div class="tl-label" style="grid-row: 5">Cyclus 2<small>topic maand 2</small></div>
         <button class="bar bar--analyse" type="button" data-phase="analyse" data-cycle="2" data-col="4" style="grid-column: 4; grid-row: 5">Analyse</button>
-        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="2" data-col="5" style="grid-column: 5; grid-row: 5">Bouw</button>
+        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="2" data-col="5" style="grid-column: 5; grid-row: 5">Bouw<span class="pips" aria-hidden="true"><i class="pip"></i><i class="pip"></i></span></button>
         <button class="bar bar--impl" type="button" data-phase="impl" data-cycle="2" data-col="6" style="grid-column: 6; grid-row: 5">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
 
         <div class="tl-label" style="grid-row: 6">Cyclus 3<small>topic maand 3</small></div>
         <button class="bar bar--analyse" type="button" data-phase="analyse" data-cycle="3" data-col="6" style="grid-column: 6; grid-row: 6">Analyse</button>
-        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="3" data-col="7" style="grid-column: 7; grid-row: 6">Bouw</button>
+        <button class="bar bar--bouw" type="button" data-phase="bouw" data-cycle="3" data-col="7" style="grid-column: 7; grid-row: 6">Bouw<span class="pips" aria-hidden="true"><i class="pip"></i><i class="pip"></i></span></button>
         <button class="bar bar--impl" type="button" data-phase="impl" data-cycle="3" data-col="8" style="grid-column: 8; grid-row: 6">Implementatie<span class="kpi-dot" aria-hidden="true"></span></button>
       </div>
     </div>
@@ -806,7 +826,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
           <h3 data-title>Implementatie</h3>
         </div>
       </div>
-      <div class="who" data-who-wrap><span class="who__label">Wie</span><span class="who__name" data-who>Innovatie / Centre of Excellence</span></div>
+      <div class="who" data-who-wrap><span class="who__label" data-who-label>In principe gedragen door</span><span class="who__name" data-who>Innovatie en Centre of Excellence</span></div>
       <ul class="ticks" data-items>
         <li>De verandering landt in het team</li>
         <li class="is-kpi"><span class="kpi-dot" aria-hidden="true"></span>Verbetering zichtbaar in de KPI's</li>
@@ -815,9 +835,10 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
     </div>
 
     <ul class="legend">
-      <li><i class="swatch swatch--analyse"></i><b>Analyse</b><span>Innovatie / CoE</span></li>
+      <li><i class="swatch swatch--analyse"></i><b>Analyse</b><span>Innovatie en CoE</span></li>
       <li><i class="swatch swatch--bouw"></i><b>Bouw</b><span>AI-Squad</span></li>
-      <li><i class="swatch swatch--impl"></i><b>Implementatie</b><span>Innovatie / CoE</span></li>
+      <li><span class="pip" aria-hidden="true"></span><b>Sessie AI-Squad</b><span>1 per week in de Bouw</span></li>
+      <li><i class="swatch swatch--impl"></i><b>Implementatie</b><span>Innovatie en CoE</span></li>
       <li><i class="swatch swatch--lab"></i><b>Experimentation Lab</b><span>off-weken</span></li>
       <li><span class="kpi-dot" aria-hidden="true"></span><b>Meetbaar resultaat</b><span>in de KPI's van het team</span></li>
     </ul>
@@ -828,12 +849,12 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   <section class="section" id="team" data-nav-section aria-labelledby="team-h">
     <div class="section-head">
       <h2 id="team-h">Wie doet mee</h2>
-      <p>Een vaste kern draagt elke cyclus. De wisselende deelnemers sluiten per topic aan, afhankelijk van het onderwerp en hun beschikbaarheid.</p>
+      <p>De AI-Squad komt in de Bouw elke week één keer bij elkaar. De vaste kern is er altijd bij. De wisselende deelnemers sluiten per topic aan, afhankelijk van het onderwerp en hun beschikbaarheid.</p>
     </div>
     <div class="grid-2">
       <div class="widget">
         <p class="count">Vaste kern · 5</p>
-        <h3>Elke cyclus</h3>
+        <h3>Bij elke sessie</h3>
         <ul class="chips">
           <li class="chip chip--core">Wesley</li>
           <li class="chip chip--core">Melanie</li>
@@ -861,7 +882,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   </section>
 
   <footer class="foot">
-    <span>AI Squads · vierde schets</span>
+    <span>AI Squads · vijfde schets</span>
     <span>15 oktober 2026</span>
   </footer>
 
@@ -870,10 +891,10 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 <script>
 (function () {
   var PHASES = {
-    analyse: { name: 'Analyse', who: 'Innovatie / Centre of Excellence', swatch: 'swatch--analyse' },
-    bouw: { name: 'Bouw', who: 'AI-Squad', swatch: 'swatch--bouw' },
-    impl: { name: 'Implementatie', who: 'Innovatie / Centre of Excellence', swatch: 'swatch--impl' },
-    lab: { name: 'Experimentation Lab', who: '', swatch: 'swatch--lab' }
+    analyse: { name: 'Analyse', whoLabel: 'In principe gedragen door', who: 'Innovatie en Centre of Excellence', swatch: 'swatch--analyse' },
+    bouw: { name: 'Bouw', whoLabel: 'Gedragen door', who: 'AI-Squad', swatch: 'swatch--bouw' },
+    impl: { name: 'Implementatie', whoLabel: 'In principe gedragen door', who: 'Innovatie en Centre of Excellence', swatch: 'swatch--impl' },
+    lab: { name: 'Experimentation Lab', whoLabel: '', who: '', swatch: 'swatch--lab' }
   };
   var toArray = function (list) { return Array.prototype.slice.call(list); };
 
@@ -909,13 +930,20 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
     var name = PHASES[bar.dataset.phase].name;
     return bar.dataset.cycle ? name + ' (cyclus ' + bar.dataset.cycle + ')' : name;
   }
-  function items(phase) {
+  function items(phase, col) {
     if (phase === 'lab') {
       var li = document.createElement('li');
       li.textContent = 'Draait in de off-weken van payroll, naast Analyse en Implementatie';
       return [li];
     }
-    return toArray(document.querySelectorAll('#panel-' + phase + ' .ticks > li')).map(function (n) { return n.cloneNode(true); });
+    var list = toArray(document.querySelectorAll('#panel-' + phase + ' .ticks > li')).map(function (n) { return n.cloneNode(true); });
+    if (phase === 'bouw') {
+      var b = col - 1, session = document.createElement('li');
+      session.className = 'is-session';
+      session.innerHTML = '<span class="pip" aria-hidden="true"></span>Sessie AI-Squad in week ' + (2 * b - 1) + ' en week ' + (2 * b);
+      list.unshift(session);
+    }
+    return list;
   }
   function joinNl(list) {
     return list.length < 2 ? list.join('') : list.slice(0, -1).join(', ') + ' en ' + list[list.length - 1];
@@ -927,10 +955,11 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
     part('[data-title]').textContent = p.name;
     part('[data-swatch]').className = 'swatch ' + p.swatch;
     part('[data-who-wrap]').hidden = !p.who;
+    part('[data-who-label]').textContent = p.whoLabel;
     part('[data-who]').textContent = p.who;
     var list = part('[data-items]');
     list.textContent = '';
-    items(phase).forEach(function (li) { list.appendChild(li); });
+    items(phase, col).forEach(function (li) { list.appendChild(li); });
     var others = bars.filter(function (b) { return b !== bar && Number(b.dataset.col) === col; }).map(label);
     var also = part('[data-also]');
     also.hidden = others.length === 0;
