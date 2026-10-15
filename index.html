@@ -301,6 +301,34 @@ button { font: inherit; color: inherit; }
   padding: 4px 8px;
 }
 .next-link:hover { text-decoration: underline; }
+.split {
+  position: relative;
+  height: 24px;
+  margin-top: 8px;
+  margin-bottom: 24px;
+  margin-inline: calc((100% - 32px) / 6);
+  border-bottom: 2px solid var(--ui);
+}
+.split::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 24px;
+  border-left: 2px solid var(--ui);
+  transform: translateX(-1px);
+}
+.target::after { content: none; }
+.target::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  height: 25px;
+  border-left: 2px solid var(--ui);
+  transform: translateX(-1px);
+}
+.plan-note { align-self: center; max-width: 40em; margin-top: 16px; text-align: center; font-size: 14px; color: var(--ink-soft); }
 
 /* Cyclus: stepper + panel */
 .cycle { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; align-items: start; }
@@ -514,6 +542,9 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   .source::after { display: none; }
   .merge { margin: 0; height: 32px; border-top: 0; }
   .merge::after { top: 0; height: 32px; }
+  .target::before { display: none; }
+  .split { margin: 8px 0 0; height: 32px; border-bottom: 0; }
+  .split::before { height: 32px; }
 }
 @media (max-width: 520px) {
   .tiles { grid-template-columns: minmax(0, 1fr); }
@@ -545,7 +576,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   <section class="overview" id="overzicht" data-nav-section aria-label="Overzicht">
     <header class="hero">
       <div class="pillar pillar--gradient">
-        <p class="eyebrow">SD Worx Nederland · derde schets</p>
+        <p class="eyebrow">SD Worx Nederland · vierde schets</p>
         <h1>AI Squads</h1>
         <p class="lead">Elke maand pakken we één proces aan. Twee weken analyseren, twee weken bouwen, twee weken implementeren, in het ritme van de payroll-kalender.</p>
       </div>
@@ -560,7 +591,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
       <a class="tile" href="#topickeuze">
         <span class="tile__label"><span class="eyebrow">Topickeuze</span><span class="arrow" aria-hidden="true">→</span></span>
         <span class="tile__value">3 wegen</span>
-        <span class="tile__text">Teams, MT en CoE-funnel leveren één topic per maand.</span>
+        <span class="tile__text">Teams, MT en CoE-funnel. Per kwartaal kiezen we de topics.</span>
       </a>
       <a class="tile" href="#cyclus">
         <span class="tile__label"><span class="eyebrow">Cyclus</span><span class="arrow" aria-hidden="true">→</span></span>
@@ -606,8 +637,8 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
 
   <section class="section" id="topickeuze" data-nav-section aria-labelledby="topickeuze-h">
     <div class="section-head">
-      <h2 id="topickeuze-h">Topickeuze</h2>
-      <p>Een topic komt via een van drie wegen binnen. Elke maand start één topic een nieuwe cyclus, te beginnen met de Analyse.</p>
+      <h2 id="topickeuze-h">Topickeuze en kwartaalplanning</h2>
+      <p>Een topic komt via een van drie wegen binnen. Per kwartaal bepalen we welke topics we aanpakken. Elk topic start een eigen cyclus, te beginnen met de Analyse.</p>
     </div>
     <div class="funnel">
       <ol class="sources">
@@ -617,10 +648,17 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
       </ol>
       <div class="merge" aria-hidden="true"></div>
       <div class="topic-node">
-        <span class="topic-node__pill">Topic van de maand</span>
-        <small>Eén per maand</small>
+        <span class="topic-node__pill">Kwartaalplanning</span>
+        <small>In maand 3 kiezen we de topics voor maand 4, 5 en 6</small>
       </div>
-      <a class="next-link" href="#cyclus">Start van de cyclus: Analyse <span aria-hidden="true">↓</span></a>
+      <div class="split" aria-hidden="true"></div>
+      <ol class="sources targets">
+        <li class="widget source target"><p class="eyebrow">Maand 4</p><h3>Topic 1</h3></li>
+        <li class="widget source target"><p class="eyebrow">Maand 5</p><h3>Topic 2</h3></li>
+        <li class="widget source target"><p class="eyebrow">Maand 6</p><h3>Topic 3</h3></li>
+      </ol>
+      <p class="plan-note">Wanneer een topic start, hangt af van de capaciteit. In maand 6 volgt de planning voor maand 7, 8 en 9, en zo verder.</p>
+      <a class="next-link" href="#cyclus">Elk topic start met de Analyse <span aria-hidden="true">↓</span></a>
     </div>
   </section>
 
@@ -633,7 +671,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
       <div class="stepper">
         <a class="step step--io" href="#topickeuze">
           <span class="step__mark" aria-hidden="true"></span>
-          <span class="step__text"><b>Topic van de maand</b><small>uit de teams, het MT of de CoE-funnel</small></span>
+          <span class="step__text"><b>Topic uit de kwartaalplanning</b><small>start afhankelijk van capaciteit</small></span>
         </a>
         <div class="steps" role="tablist" aria-label="Fasen van een cyclus" aria-orientation="vertical">
           <button class="step step--phase" type="button" role="tab" id="tab-analyse" aria-controls="panel-analyse" aria-selected="true" tabindex="0">
@@ -823,7 +861,7 @@ a.step--io:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   </section>
 
   <footer class="foot">
-    <span>AI Squads · derde schets</span>
+    <span>AI Squads · vierde schets</span>
     <span>15 oktober 2026</span>
   </footer>
 
