@@ -229,6 +229,32 @@ button { font: inherit; color: inherit; }
   text-wrap: balance;
 }
 .goal-main .goal__note { align-self: flex-start; }
+.goals__link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+.goals__arrow { font-size: 16px; letter-spacing: 0; }
+.activity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 8px 32px;
+  align-items: start;
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.activity__head { display: flex; flex-direction: column; gap: 4px; }
+.activity__head h3 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+.activity__text { grid-column: 2; grid-row: 1; max-width: 36em; }
+.activity .next-link { grid-column: 2; }
 
 /* Topickeuze */
 .intake { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
@@ -521,6 +547,9 @@ button.bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   .pillar { padding: 24px; }
   .pillar--gradient { min-height: 240px; }
   .goal-main { padding: 24px; }
+  .activity { grid-template-columns: minmax(0, 1fr); padding: 24px; }
+  .activity__text, .activity .next-link { grid-column: 1; grid-row: auto; }
+  .goals__link { padding-left: 24px; }
   .page { gap: 64px; padding-block: 24px 48px; }
   .panel__top { min-height: 0; }
 }
@@ -566,7 +595,7 @@ button.bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
   <section class="section" id="doelen" data-nav-section aria-labelledby="doelen-h">
     <div class="section-head">
       <h2 id="doelen-h">Doelen</h2>
-      <p>Eén hoofddoel en drie subdoelen.</p>
+      <p>Eén hoofddoel, één kernactiviteit waarmee we het bereiken, en drie subdoelen die we onderweg opbouwen.</p>
     </div>
     <div class="goals">
       <div class="goal-main">
@@ -574,10 +603,20 @@ button.bar:focus-visible { outline: 2px solid var(--ui); outline-offset: 2px; }
         <p class="goal-main__text">Elke maand een tastbare, meetbare verbetering in de KPI's van de teams.</p>
         <p class="goal__note"><span class="kpi-dot" aria-hidden="true"></span>Sluit aan op het NL efficiency target</p>
       </div>
+      <p class="goals__link"><span class="goals__arrow" aria-hidden="true">↓</span>Hoe we dat bereiken</p>
+      <div class="activity">
+        <div class="activity__head">
+          <p class="eyebrow">Kernactiviteit</p>
+          <h3>Proces Re-design</h3>
+        </div>
+        <p class="activity__text">Elke cyclus herontwerpen we één proces van een team: we analyseren het, bouwen de oplossing en implementeren de verandering. Daar komt de meetbare KPI-verbetering vandaan.</p>
+        <a class="next-link" href="#cyclus">Zo ziet een cyclus eruit <span aria-hidden="true">→</span></a>
+      </div>
+      <p class="goals__link"><span class="goals__arrow" aria-hidden="true">↓</span>Wat we onderweg opbouwen</p>
       <ol class="grid-3">
         <li class="widget">
           <p class="eyebrow">Subdoel 1</p>
-          <h3>Proces Re-design</h3>
+          <h3>Processen in kaart</h3>
           <p>We brengen de processen van de organisatie beter in kaart.</p>
         </li>
         <li class="widget">
